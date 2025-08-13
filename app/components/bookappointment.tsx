@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Cinzel } from "next/font/google";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
@@ -44,7 +43,7 @@ export default function BookAppointment() {
   
   // Generate particles only on the client side to avoid hydration mismatch
   useEffect(() => {
-    setParticles(Array.from({ length: 12 }, (_, i): Particle => ({
+    setParticles(Array.from({ length: 12 }, (): Particle => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       size: `${Math.random() * 1.5 + 0.5}rem`,
