@@ -151,7 +151,7 @@ export default function TermsConditions() {
                 📞 +91 9000701000
               </p>
 
-              <p className="mt-8 text-sm text-gray-500 border-t border-gray-200 pt-6">Last Updated: [Insert Date]</p>
+              <p className="mt-8 text-sm text-gray-500 border-t border-gray-200 pt-6"></p>
             </div>
           </div>
         </div>
