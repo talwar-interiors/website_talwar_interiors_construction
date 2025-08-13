@@ -1,6 +1,6 @@
-import BookAppointment from "../components/bookappointment";
-import Header from "../components/header";
-import Footer from "../components/footer";
+import BookAppointment from "./bookappointment";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
 import { Cinzel } from "next/font/google";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });

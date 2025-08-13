@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Cinzel } from "next/font/google";
-import Header from "../components/header";
-import Footer from "../components/footer";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -53,7 +53,9 @@ export default function PrivacyPolicy() {
   }, []);
 
   return (
-    <div className={`min-h-screen relative overflow-hidden ${cinzel.className}`}>
+    <div
+      className={`min-h-screen relative overflow-hidden ${cinzel.className}`}
+    >
       <Header />
 
       {/* Base background */}
@@ -64,7 +66,11 @@ export default function PrivacyPolicy() {
 
       {/* Gold Animated Waves (SVG lines) */}
       <div className="pointer-events-none absolute inset-0 z-[-20]">
-        <svg className="absolute h-full w-full" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1920 1080">
+        <svg
+          className="absolute h-full w-full"
+          preserveAspectRatio="xMidYMid slice"
+          viewBox="0 0 1920 1080"
+        >
           <path
             d="M -100 500 C 400 1000, 800 100, 1100 450 S 1600 1000, 2020 600"
             stroke="#FFD700"
@@ -179,84 +185,138 @@ export default function PrivacyPolicy() {
                 </span>
               </h1>
               <p className="text-gray-600">
-                This Privacy Policy explains how we collect, use, and protect the information you provide when using our website and services.
+                This Privacy Policy explains how we collect, use, and protect
+                the information you provide when using our website and services.
               </p>
             </div>
 
             {/* === FULL POLICY CONTENT === */}
             <div className="prose prose-lg max-w-none text-gray-700">
               <p>
-                At TALWAR Constructions & Interior&apos;s (&quot;we,&quot; &quot;our,&quot; &quot;us&quot;), we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and protect the information you provide when using our website and services.
+                At TALWAR Constructions & Interior&apos;s (&quot;we,&quot;
+                &quot;our,&quot; &quot;us&quot;), we respect your privacy and
+                are committed to protecting your personal information. This
+                Privacy Policy explains how we collect, use, and protect the
+                information you provide when using our website and services.
               </p>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">1. Information We Collect</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                1. Information We Collect
+              </h2>
               <p>We may collect the following types of information:</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>
-                  <strong>Personal Information:</strong> Name, email address, phone number, address, and other details you provide via our contact forms or during project discussions.
+                  <strong>Personal Information:</strong> Name, email address,
+                  phone number, address, and other details you provide via our
+                  contact forms or during project discussions.
                 </li>
                 <li>
-                  <strong>Project Information:</strong> Site location, design preferences, measurements, and related details.
+                  <strong>Project Information:</strong> Site location, design
+                  preferences, measurements, and related details.
                 </li>
                 <li>
-                  <strong>Technical Information:</strong> IP address, browser type, device information, and browsing behavior on our website.
+                  <strong>Technical Information:</strong> IP address, browser
+                  type, device information, and browsing behavior on our
+                  website.
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">2. How We Use Your Information</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                2. How We Use Your Information
+              </h2>
               <p>We use the collected information to:</p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Respond to inquiries and provide our services.</li>
                 <li>Prepare project proposals, quotations, and contracts.</li>
                 <li>Improve our website and service offerings.</li>
-                <li>Send important updates, service reminders, or promotional information (only if you opt in).</li>
+                <li>
+                  Send important updates, service reminders, or promotional
+                  information (only if you opt in).
+                </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">3. Sharing of Information</h2>
-              <p>We do not sell or rent your personal data. However, we may share it with:</p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Trusted partners &amp; contractors to execute your project.</li>
-                <li>Legal authorities if required by law or in case of disputes.</li>
-                <li>Service providers for payment processing, website hosting, or marketing (bound by confidentiality agreements).</li>
-              </ul>
-
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">4. Data Security</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                3. Sharing of Information
+              </h2>
               <p>
-                We take reasonable measures to safeguard your information against unauthorized access, alteration, disclosure, or destruction.
-                However, no method of transmission over the internet is 100% secure.
+                We do not sell or rent your personal data. However, we may share
+                it with:
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>
+                  Trusted partners &amp; contractors to execute your project.
+                </li>
+                <li>
+                  Legal authorities if required by law or in case of disputes.
+                </li>
+                <li>
+                  Service providers for payment processing, website hosting, or
+                  marketing (bound by confidentiality agreements).
+                </li>
+              </ul>
+
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                4. Data Security
+              </h2>
+              <p>
+                We take reasonable measures to safeguard your information
+                against unauthorized access, alteration, disclosure, or
+                destruction. However, no method of transmission over the
+                internet is 100% secure.
               </p>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">5. Your Rights</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                5. Your Rights
+              </h2>
               <p>You have the right to:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Access and review the personal information we hold about you.</li>
+                <li>
+                  Access and review the personal information we hold about you.
+                </li>
                 <li>Request corrections or updates to your information.</li>
-                <li>Withdraw consent for marketing communications at any time.</li>
+                <li>
+                  Withdraw consent for marketing communications at any time.
+                </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">6. Cookies &amp; Tracking Technologies</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                6. Cookies &amp; Tracking Technologies
+              </h2>
               <p>
-                Our website may use cookies to enhance your browsing experience and analyze website performance. You can disable cookies in your
+                Our website may use cookies to enhance your browsing experience
+                and analyze website performance. You can disable cookies in your
                 browser settings, but some features may not work properly.
               </p>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">7. Third-Party Links</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                7. Third-Party Links
+              </h2>
               <p>
-                Our website may contain links to other websites. We are not responsible for the privacy practices or content of those sites.
+                Our website may contain links to other websites. We are not
+                responsible for the privacy practices or content of those sites.
               </p>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">8. Updates to this Policy</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                8. Updates to this Policy
+              </h2>
               <p>
-                We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated &quot;Last
+                We may update this Privacy Policy from time to time. Any changes
+                will be posted on this page with an updated &quot;Last
                 Updated&quot; date.
               </p>
 
-              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">9. Contact Us</h2>
-              <p>If you have any questions about this Privacy Policy or how we handle your data, please contact:</p>
+              <h2 className="text-xl font-semibold mt-8 mb-4 text-[#d4af37]">
+                9. Contact Us
+              </h2>
+              <p>
+                If you have any questions about this Privacy Policy or how we
+                handle your data, please contact:
+              </p>
               <p className="font-medium">📞 +91 9000701000</p>
 
               <p className="mt-8 text-sm text-gray-500 border-t border-gray-200 pt-6">
-                This Privacy Policy is intended to help you understand our practices regarding your information and how we will protect it.
+                This Privacy Policy is intended to help you understand our
+                practices regarding your information and how we will protect it.
               </p>
             </div>
             {/* === /FULL POLICY CONTENT === */}
@@ -267,32 +327,75 @@ export default function PrivacyPolicy() {
       {/* Local keyframes (for Tailwind custom classes) */}
       <style jsx>{`
         @keyframes floatSlow {
-          0% { transform: translate3d(0, 0, 0); opacity: 0.3; }
-          50% { transform: translate3d(10px, -20px, 0); opacity: 0.6; }
-          100% { transform: translate3d(0, 0, 0); opacity: 0.3; }
+          0% {
+            transform: translate3d(0, 0, 0);
+            opacity: 0.3;
+          }
+          50% {
+            transform: translate3d(10px, -20px, 0);
+            opacity: 0.6;
+          }
+          100% {
+            transform: translate3d(0, 0, 0);
+            opacity: 0.3;
+          }
         }
         @keyframes pulseSlow {
-          0%, 100% { transform: scale(1); opacity: 0.1; }
-          50% { transform: scale(1.08); opacity: 0.18; }
+          0%,
+          100% {
+            transform: scale(1);
+            opacity: 0.1;
+          }
+          50% {
+            transform: scale(1.08);
+            opacity: 0.18;
+          }
         }
         @keyframes spinSlow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
         }
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         @keyframes sparkleDrift {
-          0% { transform: translateY(0) translateX(0); opacity: 0.6; }
-          50% { transform: translateY(-14px) translateX(6px); opacity: 1; }
-          100% { transform: translateY(0) translateX(0); opacity: 0.6; }
+          0% {
+            transform: translateY(0) translateX(0);
+            opacity: 0.6;
+          }
+          50% {
+            transform: translateY(-14px) translateX(6px);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(0) translateX(0);
+            opacity: 0.6;
+          }
         }
 
-        .animate-float-slow { animation: floatSlow var(--floatDur, 14s) ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulseSlow 6s ease-in-out infinite; }
-        .animate-spin-slow { animation: spinSlow 60s linear infinite; }
-        .animate-fade-in { animation: fadeIn 0.6s ease-out both; }
+        .animate-float-slow {
+          animation: floatSlow var(--floatDur, 14s) ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulseSlow 6s ease-in-out infinite;
+        }
+        .animate-spin-slow {
+          animation: spinSlow 60s linear infinite;
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.6s ease-out both;
+        }
 
         .sparkle {
           animation-name: sparkleDrift;
