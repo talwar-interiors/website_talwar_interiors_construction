@@ -12,15 +12,20 @@ export default function Header() {
   const GOLD = "#D4AF37";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#d4af37]/20 shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg relative">
+    <header className="sticky top-0 z-50 border-b border-[#d4af37]/20 shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg">
       {/* Gold gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/10 via-white/80 to-[#d4af37]/10 pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* 3-column grid ensures perfect symmetry with the logo truly centered */}
-        <div className={`grid grid-cols-3 items-center h-20 ${cinzel.className}`}>
+        <div
+          className={`grid grid-cols-3 items-center h-20 ${cinzel.className}`}
+        >
           {/* Left Links */}
-          <nav aria-label="Primary left" className="hidden md:flex justify-center gap-10">
+          <nav
+            aria-label="Primary left"
+            className="hidden md:flex justify-center gap-10"
+          >
             <NavLink href="/" label="Home" />
             <NavLink href="/portfolio" label="Portfolio" />
             <NavLink href="/gallery" label="Gallery" />
@@ -35,11 +40,25 @@ export default function Header() {
               aria-label={open ? "Close menu" : "Open menu"}
               className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-black/10 text-black/70 bg-white/60 backdrop-blur-sm"
             >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 {open ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18M3 18h18" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 6h18M3 12h18M3 18h18"
+                  />
                 )}
               </svg>
             </button>
@@ -49,7 +68,10 @@ export default function Header() {
           <div className="flex items-center justify-center">
             <Link href="/" className="group inline-flex items-center">
               <span className="sr-only">Talwar Interiors — Home</span>
-              <div className="relative" style={{ width: "80px", height: "80px" }}>
+              <div
+                className="relative"
+                style={{ width: "80px", height: "80px" }}
+              >
                 <Image
                   src="/assets/talwar_nobg.png"
                   alt="Talwar Interiors Logo"
@@ -96,10 +118,26 @@ export default function Header() {
         >
           <div className="mt-2 rounded-2xl border border-black/10 bg-white/90 backdrop-blur-md shadow-xl">
             <div className="px-3 py-2">
-              <MobileLink href="/" label="Home" onClick={() => setOpen(false)} />
-              <MobileLink href="/portfolio" label="Portfolio" onClick={() => setOpen(false)} />
-              <MobileLink href="/gallery" label="Gallery" onClick={() => setOpen(false)} />
-              <MobileLink href="/services" label="Services" onClick={() => setOpen(false)} />
+              <MobileLink
+                href="/"
+                label="Home"
+                onClick={() => setOpen(false)}
+              />
+              <MobileLink
+                href="/portfolio"
+                label="Portfolio"
+                onClick={() => setOpen(false)}
+              />
+              <MobileLink
+                href="/gallery"
+                label="Gallery"
+                onClick={() => setOpen(false)}
+              />
+              <MobileLink
+                href="/services"
+                label="Services"
+                onClick={() => setOpen(false)}
+              />
               <div className="pt-2">
                 <Link
                   href="/book"
@@ -197,9 +235,36 @@ function NavLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="nav-link text-[17px] text-black/80 hover:text-[#D4AF37] transition-colors duration-300"
+      className="relative inline-block px-4 py-2 rounded-full text-[17px] text-black/80 hover:text-[#D4AF37] transition-colors duration-300 group focus:outline-none"
+      style={{
+        border: "2px solid transparent",
+        background:
+          "linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.07) 50%, transparent 100%)",
+      }}
     >
-      {label}
+      <span className="relative z-10">{label}</span>
+      {/* Animated gold underline with bounce */}
+      <span
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-1 h-[3px] w-0 rounded-full bg-gradient-to-r from-[#d4af37] via-[#fffbe6] to-[#d4af37] shadow-[0_0_8px_2px_rgba(212,175,55,0.25)] transition-all duration-500 group-hover:w-4/5 group-hover:animate-underline-bounce"
+        aria-hidden
+      />
+      <style jsx>{`
+        @keyframes underline-bounce {
+          0% {
+            width: 0;
+          }
+          80% {
+            width: 90%;
+          }
+          100% {
+            width: 80%;
+          }
+        }
+        .group-hover\\:animate-underline-bounce:hover > span[aria-hidden] {
+          animation: underline-bounce 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55)
+            forwards;
+        }
+      `}</style>
     </Link>
   );
 }
