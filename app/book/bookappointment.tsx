@@ -101,7 +101,7 @@ export default function BookAppointment() {
       };
 
       const { data, error } = await supabase
-        .from("FuneralServiceBookings")
+        .from("customer_data")
         .insert([bookingData])
         .select("id")
         .single();
