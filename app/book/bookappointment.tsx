@@ -125,7 +125,7 @@ export default function BookAppointment() {
         });
       }, 3500);
     } catch (err: unknown) {
-      let message =
+      const message =
         err instanceof Error
           ? err.message
           : typeof err === "string"
