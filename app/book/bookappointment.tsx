@@ -124,8 +124,14 @@ export default function BookAppointment() {
           message: "",
         });
       }, 3500);
-    } catch (err: any) {
-      setErrorMsg(err.message || "Something went wrong while booking.");
+    } catch (err: unknown) {
+      let message =
+        err instanceof Error
+          ? err.message
+          : typeof err === "string"
+          ? err
+          : JSON.stringify(err);
+      setErrorMsg(message || "Something went wrong while booking.");
     } finally {
       setIsSubmitting(false);
     }
