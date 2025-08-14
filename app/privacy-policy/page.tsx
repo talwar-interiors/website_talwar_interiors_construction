@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Cinzel } from "next/font/google";
-import Header from "../../components/header";
-import Footer from "../../components/footer";
+import Header from "../../components/header/header";
+import Footer from "../../components/footer/footer";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
