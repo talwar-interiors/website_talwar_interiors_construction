@@ -117,7 +117,15 @@ export default function BookAppointment() {
 
       if (error) throw error;
 
-      setBookingId((data as any)?.id ?? null);
+      setBookingId((data as any)?.id ?? null);let newId: string | number | null = null;
+
+      if (data && typeof data === "object" && "id" in data) {
+  const possibleId = (data as { id: unknown }).id;
+  if (typeof possibleId === "string" || typeof possibleId === "number") {
+    newId = possibleId;
+  }
+}
+setBookingId(newId);
       setSubmitted(true);
 
       setTimeout(() => {
