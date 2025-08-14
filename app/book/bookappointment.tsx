@@ -125,12 +125,9 @@ export default function BookAppointment() {
         });
       }, 3500);
     } catch (err: unknown) {
+
       const message =
-        err instanceof Error
-          ? err.message
-          : typeof err === "string"
-          ? err
-          : JSON.stringify(err);
+     err instanceof Error ? err.message : typeof err === "string" ? err : JSON.stringify(err);
       setErrorMsg(message || "Something went wrong while booking.");
     } finally {
       setIsSubmitting(false);
