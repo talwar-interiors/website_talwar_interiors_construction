@@ -11,11 +11,18 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "Talwar Interiors",
   description: "Talwar Interiors",
+  icons: {
+    icon: "/assets/favicon.png", // updated path to match your file location
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* Favicon fallback link */}
+        <link rel="icon" type="image/png" href="/assets/favicon.png" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Chatbase bubble */}
         <Script id="chatbase-init" strategy="afterInteractive">

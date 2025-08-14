@@ -132,22 +132,7 @@ export default function Homepage() {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-6 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Ready to Transform Your Space?
-          </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Let&apos;s create the interior of your dreams together. Contact us
-            for a free consultation.
-          </p>
-          <button className="bg-white text-gray-900 px-10 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300">
-            Start Your Project
-          </button>
-        </div>
-      </section>
+      
     </div>
   );
 }

@@ -1,6 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { Cinzel } from "next/font/google";
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "700"], // includes bold if you want it
+  display: "swap",
+});
 
 export default function ContactButtons() {
   return (
@@ -17,7 +24,7 @@ export default function ContactButtons() {
         >
           <div className="button-content">
             <Image
-              src="/assets/whatsapp.png"        // ← if in /public/assets, use "/assets/whatsapp.png"
+              src="/assets/whatsapp.png"
               alt=""
               width={32}
               height={32}
@@ -25,7 +32,7 @@ export default function ContactButtons() {
               sizes="32px"
               priority
             />
-            <span className="button-text">Chat with us</span>
+            <span className={`button-text ${cinzel.className}`}>Chat with us</span>
           </div>
         </a>
 
@@ -38,7 +45,7 @@ export default function ContactButtons() {
         >
           <div className="button-content">
             <Image
-              src="/assets/telephone.png"       // ← if in /public/assets, use "/assets/telephone.png"
+              src="/assets/telephone.png"
               alt=""
               width={32}
               height={32}
@@ -46,7 +53,7 @@ export default function ContactButtons() {
               sizes="32px"
               priority
             />
-            <span className="button-text">Call us</span>
+            <span className={`button-text ${cinzel.className}`}>Call us</span>
           </div>
         </a>
       </div>
@@ -86,7 +93,12 @@ export default function ContactButtons() {
 
         .button-content { display: flex; align-items: center; gap: 8px; }
         .contact-icon { display: block; }
-        .button-text { color: var(--brand-gold); font-weight: 600; font-size: 14px; }
+        .button-text {
+          color: var(--brand-gold);
+          font-weight: 700;           /* Cinzel looks great bold */
+          font-size: 14px;
+          letter-spacing: 0.2px;
+        }
 
         .contact-button:hover,
         .contact-button:focus-visible {
