@@ -51,88 +51,43 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">
-            Why Choose Our Interior Design
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg
-                  className="w-8 h-8 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                Custom Design
-              </h3>
-              <p className="text-gray-600">
-                Tailored solutions that reflect your unique style and
-                preferences
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg
-                  className="w-8 h-8 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                Quality Materials
-              </h3>
-              <p className="text-gray-600">
-                Premium materials and craftsmanship that stand the test of time
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg
-                  className="w-8 h-8 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                Timely Delivery
-              </h3>
-              <p className="text-gray-600">
-                Efficient project management ensuring your space is ready when
-                promised
-              </p>
-            </div>
+      {/* Welcome Section (bolder title, centered underline & text, image on right) */}
+      <section className="py-16 md:py-24 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+          {/* Left: Title + Copy (centered) */}
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight md:whitespace-nowrap text-gray-900">
+              Welcome to <span className="text-[#D4AF37] font-black">Talwar Interiors</span>
+            </h2>
+
+            {/* centered gold line */}
+            <span className="mt-3 inline-block h-1 w-20 rounded-full bg-[#D4AF37] mx-auto" />
+
+            <p className="mt-6 text-gray-700 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
+              Step into a world where design meets passion and every detail reflects you.
+Whether you dream of a warm, inviting home or a bold, statement-making office, we bring your vision to life with creativity, precision, and timeless style. From colors and fabrics to finishes and furniture, every choice is uniquely yours. With fresh ideas and meticulous attention to detail, we create spaces that inspire, delight, and truly feel like home.
+            </p>
+          </div>
+
+          {/* Right: Landing image card (rounded + shadow) */}
+          <div className="relative w-full overflow-hidden rounded-2xl shadow-xl ring-1 ring-black/5" style={{ paddingTop: "56.25%" }}>
+            <Image
+              src="/assets/landingpage.jpg"
+              alt="Talwar Interiors showcase"
+              fill
+              className="object-cover"
+              priority
+              sizes="(min-width: 1024px) 560px, (min-width: 768px) 50vw, 100vw"
+              quality={85}
+            />
           </div>
         </div>
       </section>
-      
+
+      {/* Features Section */}
+      {/* <section className="py-20 px-6 bg-white">
+        ...
+      </section> */}
     </div>
   );
 }
