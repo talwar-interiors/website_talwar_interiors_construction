@@ -2,24 +2,35 @@
 
 import { useState, useEffect } from "react";
 import { Cinzel } from "next/font/google";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey)
-    : null;
+/** ── Supabase: safe init with URL validation ───────────────────────────── */
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-// --- Types ---
+function safeCreateSupabase(): SupabaseClient | null {
+  try {
+    if (!rawUrl || !anonKey) return null;
+    // Throws if invalid, prevents "Invalid URL" crash during prerender
+    const url = new URL(rawUrl).toString();
+    return createClient(url, anonKey);
+  } catch {
+    return null;
+  }
+}
+
+const supabase = safeCreateSupabase();
+const envOk = !!supabase;
+
+/** ── Types ─────────────────────────────────────────────────────────────── */
 type FormData = {
   name: string;
   email: string;
   phone: string;
-  date: string;
-  time: string;
+  date: string;   // YYYY-MM-DD from <input type="date">
+  time: string;   // your select values (e.g., "morning" | "afternoon" | "evening")
   message: string;
 };
 
@@ -32,7 +43,7 @@ type Particle = {
 };
 
 export default function BookAppointment() {
-  // Unified form state
+  /** ── Form + UI state ────────────────────────────────────────────────── */
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -42,13 +53,12 @@ export default function BookAppointment() {
     message: "",
   });
 
-  // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [bookingId, setBookingId] = useState<string | number | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Floating particles
+  /** ── Background particles ───────────────────────────────────────────── */
   const [particles, setParticles] = useState<Particle[]>([]);
   useEffect(() => {
     setParticles(
@@ -62,7 +72,7 @@ export default function BookAppointment() {
     );
   }, []);
 
-  // Controlled inputs
+  /** ── Controlled inputs ──────────────────────────────────────────────── */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -70,7 +80,7 @@ export default function BookAppointment() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Submit with Supabase insert + return id
+  /** ── Submit: single-object insert (fixes PGRST102) ──────────────────── */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -83,35 +93,39 @@ export default function BookAppointment() {
     }
     if (!supabase) {
       setErrorMsg(
-        "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
+        "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your hosting environment."
       );
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const bookingData = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        date: formData.date,
-        time: formData.time,
-        message: formData.message,
-        created_at: new Date().toISOString(),
+      // Build payload matching your *actual* DB columns
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),      // column is email
+        phone: formData.phone.trim(),
+        date: formData.date || null,       // if DATE column, avoid empty string
+        time: formData.time || null,       // assuming TEXT; keep as-is
+        message: formData.message?.trim() || null,
+        // (omit created_at if your table doesn't have it or has a default)
       };
 
+      // Optional: quick debug
+      // console.log("insert payload →", JSON.stringify(payload));
+
       const { data, error } = await supabase
-        .from("customer_details")
-        .insert([BookAppointment])
+        .from("customer_details")          // your table
+        .insert(payload)                   // SINGLE object (not [payload])
         .select("id")
         .single();
 
       if (error) throw error;
 
-      setBookingId(data?.id ?? null);
+      setBookingId((data as any)?.id ?? null);
       setSubmitted(true);
 
-      // Reset after a short delay (keep ID visible briefly)
+      // Reset after a short delay
       setTimeout(() => {
         setSubmitted(false);
         setBookingId(null);
@@ -125,14 +139,32 @@ export default function BookAppointment() {
         });
       }, 3500);
     } catch (err: unknown) {
-
       const message =
-     err instanceof Error ? err.message : typeof err === "string" ? err : JSON.stringify(err);
+        err instanceof Error ? err.message : typeof err === "string" ? err : JSON.stringify(err);
       setErrorMsg(message || "Something went wrong while booking.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  /** ── Render ─────────────────────────────────────────────────────────── */
+  if (!envOk) {
+    // Friendly UI guard if env vars are missing/invalid
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-lg w-full rounded-xl border border-yellow-300/40 bg-yellow-50 p-6 text-yellow-900">
+          <h2 className="text-xl font-semibold mb-2">Configuration required</h2>
+          <p className="mb-2">
+            Supabase isn’t configured. Set{" "}
+            <code className="mx-1 px-1 bg-yellow-100 rounded">NEXT_PUBLIC_SUPABASE_URL</code> to
+            your project URL (https://…supabase.co) and{" "}
+            <code className="mx-1 px-1 bg-yellow-100 rounded">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>{" "}
+            to your anon key in your hosting environment, then redeploy.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen relative overflow-hidden ${cinzel.className}`}>
@@ -160,8 +192,14 @@ export default function BookAppointment() {
       </div>
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-20 -left-20 w-40 h-40 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute top-1/4 -right-20 w-60 h-60 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: "2s" }}></div>
-        <div className="absolute -bottom-20 left-1/3 w-80 h-80 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: "4s" }}></div>
+        <div
+          className="absolute top-1/4 -right-20 w-60 h-60 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute -bottom-20 left-1/3 w-80 h-80 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "4s" }}
+        ></div>
       </div>
 
       {/* Content */}
@@ -173,7 +211,8 @@ export default function BookAppointment() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
-            Transform your space into a realm of unparalleled elegance. Our design experts await to bring your vision to life.
+            Transform your space into a realm of unparalleled elegance. Our design experts await to
+            bring your vision to life.
           </p>
         </div>
 
