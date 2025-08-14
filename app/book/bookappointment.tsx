@@ -58,7 +58,7 @@ export default function BookAppointment() {
   const [bookingId, setBookingId] = useState<string | number | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  /** ── Background particles (unchanged) ───────────────────────────────── */
+  /** ── Background particles ───────────────────────────────────────────── */
   const [particles, setParticles] = useState<Particle[]>([]);
   useEffect(() => {
     setParticles(
@@ -72,7 +72,7 @@ export default function BookAppointment() {
     );
   }, []);
 
-  /** ── Controlled inputs (unchanged) ──────────────────────────────────── */
+  /** ── Controlled inputs ──────────────────────────────────────────────── */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -80,7 +80,7 @@ export default function BookAppointment() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  /** ── Submit: single-object insert (unchanged) ───────────────────────── */
+  /** ── Submit: single-object insert (fixes PGRST102) ──────────────────── */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -100,34 +100,32 @@ export default function BookAppointment() {
 
     setIsSubmitting(true);
     try {
+      // Build payload matching your *actual* DB columns
       const payload = {
         name: formData.name.trim(),
-        email: formData.email.trim(),
+        email: formData.email.trim(),      // column is email
         phone: formData.phone.trim(),
-        date: formData.date || null,
-        time: formData.time || null,
+        date: formData.date || null,       // if DATE column, avoid empty string
+        time: formData.time || null,       // assuming TEXT; keep as-is
         message: formData.message?.trim() || null,
+        // (omit created_at if your table doesn't have it or has a default)
       };
 
+      // Optional: quick debug
+      // console.log("insert payload →", JSON.stringify(payload));
+
       const { data, error } = await supabase
-        .from("customer_details")
-        .insert(payload)
+        .from("customer_details")          // your table
+        .insert(payload)                   // SINGLE object (not [payload])
         .select("id")
         .single();
 
       if (error) throw error;
 
-      setBookingId((data as any)?.id ?? null);let newId: string | number | null = null;
-
-      if (data && typeof data === "object" && "id" in data) {
-  const possibleId = (data as { id: unknown }).id;
-  if (typeof possibleId === "string" || typeof possibleId === "number") {
-    newId = possibleId;
-  }
-}
-setBookingId(newId);
+      setBookingId((data as any)?.id ?? null);
       setSubmitted(true);
 
+      // Reset after a short delay
       setTimeout(() => {
         setSubmitted(false);
         setBookingId(null);
@@ -151,7 +149,7 @@ setBookingId(newId);
 
   /** ── Render ─────────────────────────────────────────────────────────── */
   if (!envOk) {
-    // Friendly UI guard if env vars are missing/invalid (unchanged)
+    // Friendly UI guard if env vars are missing/invalid
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="max-w-lg w-full rounded-xl border border-yellow-300/40 bg-yellow-50 p-6 text-yellow-900">
@@ -170,12 +168,7 @@ setBookingId(newId);
 
   return (
     <div className={`min-h-screen relative overflow-hidden ${cinzel.className}`}>
-      {/* ===== Light privacy-policy style background (only change) ===== */}
-      <div className="absolute inset-0 -z-10 pp-bg">
-        <div className="pp-noise" />
-      </div>
-
-      {/* Animated gold particles (unchanged) */}
+      {/* Animated gold particles */}
       <div className="absolute inset-0 pointer-events-none z-10" suppressHydrationWarning>
         {particles.map((p, i) => (
           <div
@@ -193,7 +186,23 @@ setBookingId(newId);
         ))}
       </div>
 
-      {/* Content (unchanged) */}
+      {/* Background & soft gold beams */}
+      <div className="absolute inset-0 bg-white z-0">
+        <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZjhmOGY4Ij48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNkNGFmMzciPjwvcmVjdD4KPC9zdmc+')]"></div>
+      </div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-20 -left-20 w-40 h-40 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div
+          className="absolute top-1/4 -right-20 w-60 h-60 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute -bottom-20 left-1/3 w-80 h-80 bg-[#d4af37] opacity-10 rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "4s" }}
+        ></div>
+      </div>
+
+      {/* Content */}
       <div className="relative z-20 max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
@@ -395,28 +404,33 @@ setBookingId(newId);
         </div>
       </div>
 
-      {/* Tailwind keyframes + light PP background styles */}
+      {/* Tailwind keyframes (include if not already in your globals) */}
       <style jsx global>{`
         @keyframes float-slow {
-          0% { transform: translateY(0) translateX(0); }
-          50% { transform: translateY(-10px) translateX(5px); }
-          100% { transform: translateY(0) translateX(0); }
+          0% {
+            transform: translateY(0) translateX(0);
+          }
+          50% {
+            transform: translateY(-10px) translateX(5px);
+          }
+          100% {
+            transform: translateY(0) translateX(0);
+          }
         }
-        .animate-float-slow { animation: float-slow var(--dur, 12s) ease-in-out infinite; }
-
-        /* Light "privacy policy" background: warm ivory with subtle gold tint */
-        .pp-bg {
-          background:
-            radial-gradient(120% 80% at 50% -10%, rgba(212, 175, 55, 0.10), transparent 55%),
-            radial-gradient(120% 80% at 50% 110%, rgba(212, 175, 55, 0.08), transparent 55%),
-            linear-gradient(180deg, #fffdf7 0%, #fffaf0 60%, #fff9ea 100%);
+        .animate-float-slow {
+          animation: float-slow var(--dur, 12s) ease-in-out infinite;
         }
-        .pp-noise {
-          position: absolute;
-          inset: 0;
-          opacity: 0.06;
-          mix-blend-mode: multiply;
-          background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGZpbHRlciBpZD0iYSIgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOTUiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbHRlcj0idXJsKCNhKSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==");
+        @keyframes pulse-slow {
+          0%,
+          100% {
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 6s ease-in-out infinite;
         }
       `}</style>
     </div>
