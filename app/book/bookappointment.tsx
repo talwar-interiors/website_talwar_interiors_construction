@@ -101,7 +101,7 @@ export default function BookAppointment() {
       };
 
       const { data, error } = await supabase
-        .from("customer_data")
+        .from("customer_details")
         .insert([BookAppointment])
         .select("id")
         .single();
