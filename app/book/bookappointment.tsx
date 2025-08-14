@@ -122,7 +122,16 @@ export default function BookAppointment() {
 
       if (error) throw error;
 
-      setBookingId((data as any)?.id ?? null);
+      // safely read `id` without using `any`
+let newId: string | number | null = null;
+if (data && typeof data === "object" && "id" in data) {
+  const possibleId = (data as Record<string, unknown>).id;
+  if (typeof possibleId === "string" || typeof possibleId === "number") {
+    newId = possibleId;
+  }
+}
+setBookingId(newId);
+
       setSubmitted(true);
 
       // Reset after a short delay
