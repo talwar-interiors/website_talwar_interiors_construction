@@ -61,11 +61,10 @@ export default function Header() {
 
             {/* SERVICES trigger + desktop mega panel */}
             <div className="relative" onMouseEnter={scheduleOpen} onMouseLeave={scheduleClose}>
-              <button
-                type="button"
-                aria-haspopup="menu"
-                aria-expanded={megaOpen}
-                onClick={() => setMegaOpen((v) => !v)}
+              {/* CHANGED: button -> Link to /services (kept hover behavior) */}
+              <Link
+                href="/services"
+                onClick={() => setMegaOpen(false)}
                 className="relative inline-flex items-center gap-1 px-4 py-2 rounded-full text-[17px] text-black/80 hover:text-[#D4AF37] transition-colors duration-300 group focus:outline-none"
               >
                 <span className="relative z-10 flex items-center gap-1">
@@ -89,7 +88,7 @@ export default function Header() {
                   className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-1 h-[3px] w-0 bg-gradient-to-r from-[#fffbe6] via-[#d4af37] to-[#b08c1d] rounded-full shadow-[0_0_8px_2px_rgba(212,175,55,0.18)] transition-all duration-500 group-hover:w-4/5 group-hover:animate-navbar-underline"
                   aria-hidden
                 />
-              </button>
+              </Link>
 
               {/* Hover buffer to prevent flicker when moving down */}
               <div className={`${megaOpen ? "block" : "hidden"} absolute left-0 right-0 h-3`} />
