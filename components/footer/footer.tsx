@@ -2,399 +2,458 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Cinzel } from "next/font/google";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
-type Particle = {
-  left: string;
-  top: string;
-  delay: string;
-  dur: string;
+type Orb = {
+  x: number; y: number; r: number; hue: number; alpha: number;
+  vx: number; vy: number; wobble: number; wobbleSpeed: number; glow: number;
 };
+type Spark = {
+  x: number; y: number; life: number; maxLife: number; size: number;
+  twinkle: number; speedX: number; speedY: number;
+};
+type Comet = { x: number; y: number; vx: number; vy: number; life: number; maxLife: number };
+
+const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+const chance = (p: number) => Math.random() < p;
+const TAU = Math.PI * 2;
 
 export default function Footer() {
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const year = useMemo(() => new Date().getFullYear(), []);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const [motionOK, setMotionOK] = useState(true);
 
-  // Generate random particles ONLY on the client to avoid hydration mismatch
+  // honor reduced motion
   useEffect(() => {
-    const arr: Particle[] = Array.from({ length: 8 }, () => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 2}s`,
-      dur: `${2 + Math.random() * 2}s`,
-    }));
-    setParticles(arr);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setMotionOK(!mq.matches);
+    onChange();
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
   }, []);
+
+  useEffect(() => {
+    if (!motionOK) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    let w = 0, h = 0, dpr = Math.max(1, window.devicePixelRatio || 1);
+
+    let orbs: Orb[] = [];
+    let sparks: Spark[] = [];
+    let comets: Comet[] = [];
+
+    let last = performance.now();
+
+    const fit = () => {
+      const parent = canvas.parentElement || document.body;
+      w = parent.clientWidth;
+      h = parent.clientHeight;
+      dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const init = () => {
+      fit();
+      const isMobile = w < 768;
+
+      // Smaller 3D orbs
+      const ORB_COUNT = isMobile ? 14 : 22;
+      const SPARK_COUNT = isMobile ? 90 : 140;
+
+      orbs = Array.from({ length: ORB_COUNT }, () => {
+        const r = rand(isMobile ? 8 : 10, isMobile ? 16 : 24);
+
+        return {
+          x: rand(0, w),
+          y: rand(0, h),
+          r,
+          hue: rand(44, 52),
+          alpha: rand(0.28, 0.55),
+          vx: rand(-0.16, 0.16),
+          vy: rand(-0.14, 0.14),
+          wobble: rand(0, TAU),
+          wobbleSpeed: rand(0.003, 0.01),
+          glow: rand(0.7, 1.1),
+        };
+      });
+
+      sparks = Array.from({ length: SPARK_COUNT }, () => ({
+        x: rand(0, w), y: rand(0, h), life: 0, maxLife: rand(1.8, 3.6),
+        size: rand(0.8, 1.8), twinkle: rand(0.4, 1),
+        speedX: rand(-0.06, 0.06), speedY: rand(-0.06, 0.06),
+      }));
+
+      comets = [];
+    };
+
+    // Draw helpers
+    const drawOrb = (o: Orb) => {
+      // fake light from top-left by offsetting inner gradient center
+      const lx = o.x - o.r * 0.35;
+      const ly = o.y - o.r * 0.35;
+
+      const grad = ctx.createRadialGradient(lx, ly, o.r * 0.12, o.x, o.y, o.r);
+      grad.addColorStop(0.0, `hsla(${o.hue}, 95%, 98%, ${0.85 * o.alpha})`);
+      grad.addColorStop(0.25, `hsla(${o.hue}, 90%, 80%, ${0.65 * o.alpha})`);
+      grad.addColorStop(0.65, `hsla(${o.hue - 8}, 80%, 55%, ${0.28 * o.alpha})`);
+      grad.addColorStop(1.0, `hsla(${o.hue - 8}, 80%, 44%, 0)`);
+
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, o.r, 0, TAU);
+      ctx.fill();
+
+      // subtle rim glow
+      ctx.shadowColor = `hsla(${o.hue}, 95%, 72%, ${0.35 * o.alpha * o.glow})`;
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, o.r * 0.65, 0, TAU);
+      ctx.fill();
+
+      // tiny specular glint
+      ctx.globalCompositeOperation = "screen";
+      ctx.fillStyle = `rgba(255,255,255,${0.35 * o.alpha})`;
+      ctx.beginPath();
+      ctx.arc(lx, ly, o.r * 0.08, 0, TAU);
+      ctx.fill();
+
+      ctx.restore();
+    };
+
+    const drawSpark = (s: Spark) => {
+      const a = Math.sin((s.life / s.maxLife) * Math.PI) * s.twinkle;
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+      ctx.fillStyle = `rgba(255,240,200,${a})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, TAU);
+      ctx.fill();
+
+      // tiny cross-star
+      ctx.strokeStyle = `rgba(212,175,55,${0.22 * a})`;
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(s.x - s.size * 2, s.y);
+      ctx.lineTo(s.x + s.size * 2, s.y);
+      ctx.moveTo(s.x, s.y - s.size * 2);
+      ctx.lineTo(s.x, s.y + s.size * 2);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const drawComet = (c: Comet) => {
+      const prog = c.life / c.maxLife;
+      const len = 150 * (1 - prog);
+      const angle = Math.atan2(c.vy, c.vx);
+
+      ctx.save();
+      ctx.globalCompositeOperation = "screen";
+
+      const grad = ctx.createLinearGradient(
+        c.x - Math.cos(angle) * len, c.y - Math.sin(angle) * len, c.x, c.y
+      );
+      grad.addColorStop(0, "rgba(212,175,55,0)");
+      grad.addColorStop(1, "rgba(255,240,200,0.9)");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(c.x - Math.cos(angle) * len, c.y - Math.sin(angle) * len);
+      ctx.lineTo(c.x, c.y);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(255,240,200,0.95)";
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 2.3, 0, TAU);
+      ctx.fill();
+
+      ctx.restore();
+    };
+
+    // Tick
+    const step = () => {
+      const now = performance.now();
+      const dt = (now - last) / 16.6667;
+      last = now;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // faint vignette for depth
+      const vGrad = ctx.createRadialGradient(
+        w / 2, h / 2, Math.min(w, h) * 0.15,
+        w / 2, h / 2, Math.max(w, h) * 0.75
+      );
+      vGrad.addColorStop(0, "rgba(255,255,255,0)");
+      vGrad.addColorStop(1, "rgba(0,0,0,0.06)");
+      ctx.fillStyle = vGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // orbs
+      for (const o of orbs) {
+        o.wobble += o.wobbleSpeed * dt;
+        o.x += (o.vx + Math.sin(o.wobble) * 0.16) * dt * 1.2;
+        o.y += (o.vy + Math.cos(o.wobble * 0.9) * 0.13) * dt * 1.2;
+
+        if (o.x < -o.r) o.x = w + o.r;
+        if (o.x > w + o.r) o.x = -o.r;
+        if (o.y < -o.r) o.y = h + o.r;
+        if (o.y > h + o.r) o.y = -o.r;
+
+        drawOrb(o);
+      }
+
+      // sparks
+      for (const s of sparks) {
+        s.life += (1 / 60) * dt;
+        if (s.life > s.maxLife) {
+          s.x = rand(0, w); s.y = rand(0, h); s.life = 0;
+          s.maxLife = rand(1.8, 3.6);
+          s.size = rand(0.8, 1.8);
+          s.twinkle = rand(0.4, 1);
+          s.speedX = rand(-0.06, 0.06);
+          s.speedY = rand(-0.06, 0.06);
+        } else {
+          s.x += s.speedX * dt * 1.4;
+          s.y += s.speedY * dt * 1.4;
+          if (s.x < 0) s.x = w; if (s.x > w) s.x = 0;
+          if (s.y < 0) s.y = h; if (s.y > h) s.y = 0;
+        }
+        drawSpark(s);
+      }
+
+      // comets
+      if (chance(0.012)) {
+        const fromLeft = chance(0.5);
+        const y = rand(h * 0.1, h * 0.6);
+        comets.push({
+          x: fromLeft ? -40 : w + 40,
+          y,
+          vx: fromLeft ? rand(4.2, 6.5) : rand(-6.5, -4.2),
+          vy: rand(-0.3, 0.2),
+          life: 0,
+          maxLife: rand(1.8, 2.6),
+        });
+      }
+      comets = comets.filter((c) => c.life < c.maxLife);
+      for (const c of comets) {
+        c.life += (1 / 60) * dt;
+        c.x += c.vx * dt;
+        c.y += c.vy * dt;
+        drawComet(c);
+      }
+
+      rafRef.current = requestAnimationFrame(step);
+    };
+
+    const onResize = () => {
+      fit();
+      for (const o of orbs) { o.x = clamp(o.x, -o.r, w + o.r); o.y = clamp(o.y, -o.r, h + o.r); }
+      for (const s of sparks) { s.x = clamp(s.x, 0, w); s.y = clamp(s.y, 0, h); }
+    };
+
+    init();
+    last = performance.now();
+    rafRef.current = requestAnimationFrame(step);
+    window.addEventListener("resize", onResize);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [motionOK]);
 
   return (
     <footer
-      className={`relative text-gray-800 border-t border-[#d4af37]/30 backdrop-blur-lg overflow-hidden ${cinzel.className}`}
+      className={`relative overflow-hidden border-t border-[#d4af37]/30 bg-white ${cinzel.className}`}
+      aria-labelledby="footer-heading"
     >
-      {/* Gold gradient overlay (matching navbar) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/10 via-white/80 to-[#d4af37]/10 pointer-events-none" />
+      {/* light gold mesh behind canvas */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            "radial-gradient(160% 100% at 0% 0%, rgba(212,175,55,0.06), transparent 55%), radial-gradient(180% 120% at 100% 100%, rgba(212,175,55,0.06), transparent 60%)",
+        }}
+      />
 
-      {/* Animated Golden Balls/Orbs */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Floating Golden Orbs */}
-        <div className="absolute top-10 left-10 w-3 h-3 bg-[#d4af37] rounded-full animate-float-1 opacity-60"></div>
-        <div className="absolute top-20 right-20 w-2 h-2 bg-[#d4af37] rounded-full animate-float-2 opacity-40"></div>
-        <div className="absolute top-32 left-1/4 w-4 h-4 bg-[#d4af37] rounded-full animate-float-3 opacity-50"></div>
-        <div className="absolute top-16 right-1/3 w-2.5 h-2.5 bg-[#d4af37] rounded-full animate-float-4 opacity-70"></div>
-
-        {/* Bottom Floating Orbs */}
-        <div className="absolute bottom-20 left-16 w-3.5 h-3.5 bg-[#d4af37] rounded-full animate-float-5 opacity-55"></div>
-        <div className="absolute bottom-32 right-24 w-2 h-2 bg-[#d4af37] rounded-full animate-float-6 opacity-45"></div>
-        <div className="absolute bottom-24 left-1/3 w-3 h-3 bg-[#d4af37] rounded-full animate-float-7 opacity-60"></div>
-
-        {/* Center Floating Orbs */}
-        <div className="absolute top-1/2 left-8 w-2.5 h-2.5 bg-[#d4af37] rounded-full animate-float-8 opacity-50"></div>
-        <div className="absolute top-1/2 right-12 w-3 h-3 bg-[#d4af37] rounded-full animate-float-9 opacity-65"></div>
+      {/* canvas animation layer */}
+      <div className="absolute inset-0 z-[1]" aria-hidden="true">
+        <canvas ref={canvasRef} className="h-full w-full" />
       </div>
 
-      {/* Golden Particle Effects (hydration-safe: generated on client) */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full">
-          {particles.map((p, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-[#d4af37] rounded-full animate-pulse"
-              style={{
-                left: p.left,
-                top: p.top,
-                animationDelay: p.delay,
-                animationDuration: p.dur,
-              }}
-            />
-          ))}
-        </div>
-      </div>
+      {/* subtle sheen */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[2] mix-blend-screen"
+        style={{
+          background:
+            "linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.32) 8%, rgba(255,255,255,0) 16%)",
+          backgroundSize: "240% 240%",
+          animation: motionOK ? "sheen 8.5s cubic-bezier(.2,.8,.2,1) infinite" : "none",
+        }}
+      />
+      {/* hairline */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-px"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(212,175,55,.7), transparent)" }}
+      />
 
-      {/* Main Footer Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Logo and Company Info */}
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center mb-6 group">
-              <div className="relative">
-                <Image
-                  src="/assets/talwar_nobg.png"
-                  alt="Talwar Interiors Logo"
-                  width={50}
-                  height={50}
-                  className="mr-3 transition-transform duration-500 group-hover:scale-110"
-                />
-                {/* Enhanced golden glow around logo */}
-                <div className="absolute inset-0 bg-[#d4af37]/20 rounded-full blur-md -z-10 group-hover:bg-[#d4af37]/30 transition-all duration-500"></div>
+      {/* CONTENT */}
+      <div className="relative z-[3] mx-auto max-w-7xl px-6 py-14">
+        <h2 id="footer-heading" className="sr-only">Site footer</h2>
+
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
+          {/* Brand + blurb + CTA */}
+          <div className="md:col-span-5">
+            <div className="flex items-center gap-3">
+              <div className="relative h-12 w-12">
+                <Image src="/assets/talwar_nobg.png" alt="Talwar Interiors logo" fill className="object-contain" sizes="48px" priority />
               </div>
-              <h3 className="text-2xl font-bold text-[#D4AF37] drop-shadow-sm group-hover:drop-shadow-lg transition-all duration-300">
+              <p className="text-2xl font-bold tracking-wide bg-gradient-to-r from-[#b8892b] via-[#D4AF37] to-[#b8892b] bg-clip-text text-transparent">
                 Talwar Interiors
-              </h3>
+              </p>
             </div>
-            <p className="text-black/80 mb-4 max-w-md leading-relaxed">
-              Your trusted partner in interior design and construction. We
-              transform spaces into beautiful, functional environments that
-              reflect your unique style.
+
+            <p className="mt-5 max-w-md leading-relaxed text-black/80">
+              Your trusted partner in interior design and construction. We transform spaces into
+              beautiful, functional environments that reflect your unique style.
             </p>
-            <div className="flex space-x-4">
-              {/* Instagram */}
-              <a
-                href="https://www.instagram.com/talwarinteriors"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black/70 hover:text-[#D4AF37] transition-all duration-300 hover:scale-110 p-2 rounded-full hover:bg-[#d4af37]/10 group"
-                aria-label="Instagram"
-              >
-                <svg
-                  className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+
+            {/* socials */}
+            <div className="mt-5 flex items-center gap-4">
+              <a href="https://www.instagram.com/talwarinteriors" target="_blank" rel="noopener noreferrer"
+                 className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]" aria-label="Instagram" title="Instagram">
+                <svg className="h-5 w-5 transition group-hover:rotate-[8deg]" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25.75a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                 </svg>
               </a>
-              {/* Facebook */}
-              <a
-                href="https://www.facebook.com/talwarinteriors"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black/70 hover:text-[#D4AF37] transition-all duration-300 hover:scale-110 p-2 rounded-full hover:bg-[#d4af37]/10 group"
-                aria-label="Facebook"
-              >
-                <svg
-                  className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.405 24 24 23.408 24 22.674V1.326C24 .592 23.405 0 22.675 0" />
+              <a href="https://www.facebook.com/talwarinteriors" target="_blank" rel="noopener noreferrer"
+                 className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]" aria-label="Facebook" title="Facebook">
+                <svg className="h-5 w-5 transition group-hover:rotate-[8deg]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.405 24 24 23.408 24 22.674V1.326C24 .592 23.405 0 22.675 0"/>
                 </svg>
               </a>
-              {/* LinkedIn */}
-              <a
-                href="https://www.linkedin.com/company/talwarinteriors"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black/70 hover:text-[#D4AF37] transition-all duration-300 hover:scale-110 p-2 rounded-full hover:bg-[#d4af37]/10 group"
-                aria-label="LinkedIn"
-              >
-                <svg
-                  className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              <a href="https://www.linkedin.com/company/talwarinteriors" target="_blank" rel="noopener noreferrer"
+                 className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]" aria-label="LinkedIn" title="LinkedIn">
+                <svg className="h-5 w-5 transition group-hover:rotate-[8deg]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/>
                 </svg>
               </a>
+            </div>
+
+            <div className="mt-6">
+              <Link href="/book"
+                className="inline-flex items-center justify-center rounded-2xl border border-[#BA8D2F] bg-gradient-to-b from-[#F2D885] via-[#D4AF37] to-[#B8892B] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(212,175,55,0.30)] ring-1 ring-[#D4AF37]/40 transition hover:shadow-[0_12px_34px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+                Book an Appointment
+              </Link>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="group">
-            <h4 className="text-lg font-semibold mb-6 text-[#D4AF37] border-b-2 border-[#d4af37]/30 pb-2 group-hover:border-[#d4af37] transition-all duration-300">
-              Quick Links
-            </h4>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/"
-                  className="text-black/80 hover:text-[#D4AF37] transition-all duration-300 hover:translate-x-1 inline-block group/item"
-                >
-                  <span className="group-hover/item:bg-[#d4af37]/10 px-2 py-1 rounded transition-all duration-300">
-                    Home
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#about"
-                  className="text-black/80 hover:text-[#D4AF37] transition-all duration-300 hover:translate-x-1 inline-block group/item"
-                >
-                  <span className="group-hover/item:bg-[#d4af37]/10 px-2 py-1 rounded transition-all duration-300">
-                    About Us
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#services"
-                  className="text-black/80 hover:text-[#D4AF37] transition-all duration-300 hover:translate-x-1 inline-block group/item"
-                >
-                  <span className="group-hover/item:bg-[#d4af37]/10 px-2 py-1 rounded transition-all duration-300">
-                    Services
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#portfolio"
-                  className="text-black/80 hover:text-[#D4AF37] transition-all duration-300 hover:translate-x-1 inline-block group/item"
-                >
-                  <span className="group-hover/item:bg-[#d4af37]/10 px-2 py-1 rounded transition-all duration-300">
-                    Portfolio
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#contact"
-                  className="text-black/80 hover:text-[#D4AF37] transition-all duration-300 hover:translate-x-1 inline-block group/item"
-                >
-                  <span className="group-hover/item:bg-[#d4af37]/10 px-2 py-1 rounded transition-all duration-300">
-                    Contact
-                  </span>
-                </Link>
-              </li>
+          <nav className="md:col-span-3" aria-label="Quick links">
+            <h3 className="text-lg font-semibold text-[#D4AF37]">Quick Links</h3>
+            <div className="mt-2 h-px w-28 bg-gradient-to-r from-[#d4af37] to-transparent" aria-hidden="true" />
+            <ul className="mt-5 space-y-3 text-[15px]">
+              {[
+                { label: "Home", href: "/" },
+                { label: "Services", href: "/services" },
+                { label: "Gallery", href: "/gallery" },
+                { label: "Book Appointment", href: "/book" },
+              ].map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href}
+                    className="group inline-flex items-center gap-2 text-black/80 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+                    <span className="relative">
+                      {item.label}
+                      <span className="pointer-events-none absolute -bottom-0.5 left-0 h-[2px] w-0 bg-gradient-to-r from-[#fff0c2] via-[#d4af37] to-[#b8892b] transition-all duration-300 group-hover:w-full" />
+                    </span>
+                    <svg className="h-3.5 w-3.5 opacity-0 transition group-hover:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 12h14M13 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </li>
+              ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Services */}
-          <div className="group">
-            <h4 className="text-lg font-semibold mb-6 text-[#D4AF37] border-b-2 border-[#d4af37]/30 pb-2 group-hover:border-[#d4af37] transition-all duration-300">
-              Services
-            </h4>
-            <ul className="space-y-3">
-              <li>
-                <span className="text-black/80">Interior Design</span>
-              </li>
-              <li>
-                <span className="text-black/80">Construction</span>
-              </li>
-              <li>
-                <span className="text-black/80">Renovation</span>
-              </li>
-              <li>
-                <span className="text-black/80">Consultation</span>
-              </li>
-              <li>
-                <span className="text-black/80">Project Management</span>
-              </li>
+          <nav className="md:col-span-4" aria-label="Services">
+            <h3 className="text-lg font-semibold text-[#D4AF37]">Services</h3>
+            <div className="mt-2 h-px w-40 bg-gradient-to-r from-[#d4af37] to-transparent" aria-hidden="true" />
+            <ul className="mt-5 grid grid-cols-1 gap-x-6 gap-y-3 text-[15px] sm:grid-cols-2">
+              {[
+                { label: "Property Development & Civil Contracting", id: "property-development-civil-contracting" },
+                { label: "Residential & Commercial Construction", id: "residential-commercial-construction" },
+                { label: "Fabrication", id: "fabrication" },
+                { label: "Interior & Exterior Design", id: "interior-exterior-design" },
+                { label: "Furniture, Fabric & Accessories", id: "furniture-fabric-accessories" },
+                { label: "Lighting & False Ceiling Solutions", id: "lighting-false-ceiling-solutions" },
+                { label: "Space Planning & Optimization", id: "space-planning-optimization" },
+              ].map((s) => (
+                <li key={s.id} className="leading-snug">
+                  <Link href={`/services#${s.id}`}
+                    className="group inline-flex items-start gap-2 text-black/80 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#D4AF37]/80 transition group-hover:scale-110" />
+                    <span className="relative">
+                      {s.label}
+                      <span className="pointer-events-none absolute -bottom-0.5 left-0 h-[2px] w-0 bg-gradient-to-r from-[#fff0c2] via-[#d4af37] to-[#b8892b] transition-all duration-300 group-hover:w-full" />
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
+          </nav>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="relative z-[3] border-t border-[#d4af37]/25">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 text-sm text-black/80">
+          <p>©{year} Talwar Interiors · Developed by Osman</p>
+          <div className="flex items-center gap-6">
+            <Link href="/terms-conditions" className="hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+              Terms & Conditions
+            </Link>
+            <Link href="/privacy-policy" className="hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+              Privacy Policy
+            </Link>
+            <a
+              href="#top"
+              className="inline-flex items-center gap-1 rounded-full border border-[#d4af37]/50 px-3 py-1.5 text-xs text-[#8b6b1f] transition hover:border-[#d4af37] hover:bg-[#fff9e6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]"
+              aria-label="Back to top"
+            >
+              ↑ Top
+            </a>
           </div>
         </div>
       </div>
 
-      {/* Bottom Footer */}
-      <div className="relative z-10 border-t border-[#d4af37]/30">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            {/* Copyright */}
-            <div className="text-black/80 text-sm group">
-              <span className="group-hover:text-[#D4AF37] transition-colors duration-300">
-                ©2025 Talwar Interiors | Developed by Osman
-              </span>
-            </div>
-
-            {/* Legal Links */}
-            <div className="flex space-x-6 text-sm">
-              <Link
-                href="/terms-conditions"
-                className="text-black/80 hover:text-[#D4AF37] transition-all duration-300 hover:scale-105 group"
-              >
-                <span className="group-hover:bg-[#d4af37]/10 px-2 py-1 rounded transition-all duration-300">
-                  Terms & Conditions
-                </span>
-              </Link>
-              <Link
-                href="/privacy-policy"
-                className="text-black/80 hover:text-[#D4AF37] transition-all duration-300 hover:scale-105 group"
-              >
-                <span className="group-hover:bg-[#d4af37]/10 px-2 py-1 rounded transition-all duration-300">
-                  Privacy Policy
-                </span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Custom CSS for animations */}
       <style jsx>{`
-        @keyframes float-1 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-20px) rotate(180deg);
-          }
+        @keyframes sheen {
+          0%   { background-position: 120% -10%; opacity: 0; }
+          10%  { opacity: .9; }
+          45%  { background-position: -20% 120%; opacity: 0; }
+          100% { background-position: -20% 120%; opacity: 0; }
         }
-        @keyframes float-2 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-15px) rotate(-180deg);
-          }
-        }
-        @keyframes float-3 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-25px) rotate(90deg);
-          }
-        }
-        @keyframes float-4 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-18px) rotate(-90deg);
-          }
-        }
-        @keyframes float-5 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-22px) rotate(180deg);
-          }
-        }
-        @keyframes float-6 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-16px) rotate(-180deg);
-          }
-        }
-        @keyframes float-7 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-24px) rotate(90deg);
-          }
-        }
-        @keyframes float-8 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-19px) rotate(-90deg);
-          }
-        }
-        @keyframes float-9 {
-          0%,
-          100% {
-            transform: translateY(0) rotate(0);
-          }
-          50% {
-            transform: translateY(-21px) rotate(180deg);
-          }
-        }
-        .animate-float-1 {
-          animation: float-1 6s ease-in-out infinite;
-        }
-        .animate-float-2 {
-          animation: float-2 7s ease-in-out infinite;
-        }
-        .animate-float-3 {
-          animation: float-3 8s ease-in-out infinite;
-        }
-        .animate-float-4 {
-          animation: float-4 5s ease-in-out infinite;
-        }
-        .animate-float-5 {
-          animation: float-5 6.5s ease-in-out infinite;
-        }
-        .animate-float-6 {
-          animation: float-6 7.5s ease-in-out infinite;
-        }
-        .animate-float-7 {
-          animation: float-7 8.5s ease-in-out infinite;
-        }
-        .animate-float-8 {
-          animation: float-8 6.8s ease-in-out infinite;
-        }
-        .animate-float-9 {
-          animation: float-9 7.2s ease-in-out infinite;
+        @media (prefers-reduced-motion: reduce) {
+          * { animation: none !important; transition: none !important; }
         }
       `}</style>
-
-      {/* <footer className="w-full py-8 bg-white/90 border-t border-[#d4af37]/20 text-center text-gray-700 text-sm">
-        <div>
-          &copy; {new Date().getFullYear()} Talwar Interiors & Constructions.
-          All rights reserved.
-        </div>
-        <div className="mt-1">
-          Official Email:{" "}
-          <a
-            href="mailto:info@talwarinteriors.in"
-            className="text-[#D4AF37] hover:underline font-medium"
-          >
-            info@talwarinteriors.in
-          </a>
-        </div>
-      </footer> */}
     </footer>
   );
 }
