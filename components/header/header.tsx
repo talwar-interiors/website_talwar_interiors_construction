@@ -54,80 +54,13 @@ export default function Header() {
       <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/10 via-white/80 to-[#d4af37]/10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div
-          className={`grid grid-cols-3 items-center h-20 ${cinzel.className}`}
-        >
-          {/* Left links */}
-          <nav
-            aria-label="Primary left"
-            className="hidden md:flex justify-center gap-10"
-          >
+        <div className={`grid grid-cols-3 items-center h-20 ${cinzel.className}`}>
+          {/* Left: Home + SERVICES */}
+          <nav aria-label="Primary left" className="hidden md:flex items-center justify-center gap-8">
             <NavLink href="/" label="Home" />
-            <NavLink href="/portfolio" label="Portfolio" />
-            <NavLink href="/gallery" label="Gallery" />
-          </nav>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-controls="mobile-nav"
-              aria-label={open ? "Close menu" : "Open menu"}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-black/10 text-black/70 bg-white/60 backdrop-blur-sm"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                {open ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 6h18M3 12h18M3 18h18"
-                  />
-                )}
-              </svg>
-            </button>
-          </div>
-
-          {/* Center logo */}
-          <div className="flex items-center justify-center">
-            <Link href="/" className="group inline-flex items-center">
-              <span className="sr-only">Talwar Interiors — Home</span>
-              <div
-                className="relative"
-                style={{ width: "80px", height: "80px" }}
-              >
-                <Image
-                  src="/assets/talwar_nobg.png"
-                  alt="Talwar Interiors Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                  sizes="48px"
-                />
-              </div>
-            </Link>
-          </div>
-
-          {/* Right: Services + CTA */}
-          <div className="hidden md:flex justify-center items-center gap-10">
             {/* SERVICES trigger + desktop mega panel */}
-            <div
-              className="relative"
-              onMouseEnter={scheduleOpen}
-              onMouseLeave={scheduleClose}
-            >
+            <div className="relative" onMouseEnter={scheduleOpen} onMouseLeave={scheduleClose}>
               <button
                 type="button"
                 aria-haspopup="menu"
@@ -146,9 +79,7 @@ export default function Header() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className={`transition-transform duration-200 ${
-                      megaOpen ? "rotate-180" : ""
-                    }`}
+                    className={`transition-transform duration-200 ${megaOpen ? "rotate-180" : ""}`}
                   >
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
@@ -161,19 +92,13 @@ export default function Header() {
               </button>
 
               {/* Hover buffer to prevent flicker when moving down */}
-              <div
-                className={`${
-                  megaOpen ? "block" : "hidden"
-                } absolute left-0 right-0 h-3`}
-              />
+              <div className={`${megaOpen ? "block" : "hidden"} absolute left-0 right-0 h-3`} />
 
-              {/* Mega panel */}
+              {/* Mega panel (opens from left) */}
               <div
                 role="menu"
-                className={`absolute right-0 mt-3 w-[600px] rounded-2xl bg-white/95 backdrop-blur-md border border-[#d4af37]/25 shadow-[0_20px_40px_rgba(0,0,0,0.12)] ring-1 ring-black/5 transition-all duration-200 ${
-                  megaOpen
-                    ? "opacity-100 translate-y-0"
-                    : "pointer-events-none opacity-0 translate-y-2"
+                className={`absolute left-0 mt-3 w-[min(92vw,640px)] rounded-2xl bg-white/95 backdrop-blur-md border border-[#d4af37]/25 shadow-[0_20px_40px_rgba(0,0,0,0.12)] ring-1 ring-black/5 transition-all duration-200 ${
+                  megaOpen ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-2"
                 }`}
               >
                 <div className="h-1 w-full bg-gradient-to-r from-transparent via-[#d4af37]/60 to-transparent rounded-t-2xl" />
@@ -195,9 +120,7 @@ export default function Header() {
                           <div className="text-[15px] font-semibold text-gray-900 group-hover:text-[#D4AF37]">
                             {service}
                           </div>
-                          <div className="text-[12px] text-gray-500">
-                            Explore details →
-                          </div>
+                          <div className="text-[12px] text-gray-500">Explore details →</div>
                         </div>
                       </Link>
                     );
@@ -215,8 +138,47 @@ export default function Header() {
                 </div>
               </div>
             </div>
+          </nav>
 
-            {/* CTA (Book Appointment) */}
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              aria-label={open ? "Close menu" : "Open menu"}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-black/10 text-black/70 bg-white/60 backdrop-blur-sm"
+            >
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                {open ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18M3 18h18" />
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Center logo */}
+          <div className="flex items-center justify-center">
+            <Link href="/" className="group inline-flex items-center">
+              <span className="sr-only">Talwar Interiors — Home</span>
+              <div className="relative" style={{ width: "80px", height: "80px" }}>
+                <Image
+                  src="/assets/talwar_nobg.png"
+                  alt="Talwar Interiors Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                  sizes="48px"
+                />
+              </div>
+            </Link>
+          </div>
+
+          {/* Right: Gallery + CTA */}
+          <div className="hidden md:flex justify-center items-center gap-10">
+            <NavLink href="/gallery" label="Gallery" />
             <BookCTA className="ml-0" />
           </div>
         </div>
@@ -225,9 +187,7 @@ export default function Header() {
         <div
           id="mobile-nav"
           className={`md:hidden fixed inset-x-0 top-20 z-50 transition-all duration-300 ${
-            open
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
+            open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
           style={{
             maxHeight: open ? "80vh" : "0",
@@ -240,21 +200,7 @@ export default function Header() {
         >
           <div className="mt-2 rounded-2xl border border-black/10 bg-transparent backdrop-blur-md shadow-xl">
             <div className="px-3 py-2">
-              <MobileLink
-                href="/"
-                label="Home"
-                onClick={() => setOpen(false)}
-              />
-              <MobileLink
-                href="/portfolio"
-                label="Portfolio"
-                onClick={() => setOpen(false)}
-              />
-              <MobileLink
-                href="/gallery"
-                label="Gallery"
-                onClick={() => setOpen(false)}
-              />
+              <MobileLink href="/" label="Home" onClick={() => setOpen(false)} />
 
               {/* MOBILE SERVICES */}
               <MobileServicesAccordion
@@ -264,10 +210,9 @@ export default function Header() {
                 onItemClick={() => setOpen(false)}
               />
 
-              <BookCTA
-                className="block w-full text-center mt-2"
-                label="Book an Appointment"
-              />
+              <MobileLink href="/gallery" label="Gallery" onClick={() => setOpen(false)} />
+
+              <BookCTA className="block w-full text-center mt-2" label="Book an Appointment" />
             </div>
           </div>
         </div>
@@ -295,10 +240,9 @@ export default function Header() {
               rgba(212, 175, 55, 0.02) 40%,
               rgba(212, 175, 55, 0.1) 80%
             );
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04),
-              inset 0 0 0.5px rgba(255, 255, 255, 0.3);
-            transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-              box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1), color 220ms ease;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), inset 0 0 0.5px rgba(255, 255, 255, 0.3);
+            transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              color 220ms ease;
             will-change: transform, box-shadow;
             outline: none;
             -webkit-tap-highlight-color: transparent;
@@ -306,13 +250,11 @@ export default function Header() {
 
           .cta-gold:hover {
             transform: translateY(-1px) scale(1.02);
-            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12),
-              0 0 0 6px var(--gold-soft);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12), 0 0 0 6px var(--gold-soft);
           }
           .cta-gold:active {
             transform: translateY(0) scale(0.995);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1),
-              0 0 0 4px var(--gold-soft);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1), 0 0 0 4px var(--gold-soft);
           }
           .cta-gold:focus-visible {
             box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold-strong);
@@ -328,8 +270,7 @@ export default function Header() {
           .cta-arrow {
             position: relative;
             z-index: 2;
-            transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-              opacity 220ms ease;
+            transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 220ms ease;
             transform: translateX(0);
             opacity: 0.9;
           }
@@ -372,11 +313,7 @@ export default function Header() {
             position: absolute;
             inset: 2px;
             border-radius: inherit;
-            background: radial-gradient(
-              80% 140% at 50% 50%,
-              rgba(212, 175, 55, 0.25),
-              rgba(212, 175, 55, 0) 70%
-            );
+            background: radial-gradient(80% 140% at 50% 50%, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0) 70%);
             filter: blur(8px);
             opacity: 0.65;
             animation: breathe 3s ease-in-out infinite;
@@ -406,26 +343,10 @@ export default function Header() {
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            background: radial-gradient(
-                2px 2px at 14% 60%,
-                rgba(255, 240, 200, 0.9),
-                rgba(255, 240, 200, 0) 60%
-              ),
-              radial-gradient(
-                1.5px 1.5px at 72% 30%,
-                rgba(255, 250, 230, 0.95),
-                rgba(255, 250, 230, 0) 60%
-              ),
-              radial-gradient(
-                1.8px 1.8px at 36% 20%,
-                rgba(255, 235, 180, 0.9),
-                rgba(255, 235, 180, 0) 60%
-              ),
-              radial-gradient(
-                1.3px 1.3px at 86% 72%,
-                rgba(255, 255, 255, 0.9),
-                rgba(255, 255, 255, 0) 60%
-              );
+            background: radial-gradient(2px 2px at 14% 60%, rgba(255, 240, 200, 0.9), rgba(255, 240, 200, 0) 60%),
+              radial-gradient(1.5px 1.5px at 72% 30%, rgba(255, 250, 230, 0.95), rgba(255, 250, 230, 0) 60%),
+              radial-gradient(1.8px 1.8px at 36% 20%, rgba(255, 235, 180, 0.9), rgba(255, 235, 180, 0) 60%),
+              radial-gradient(1.3px 1.3px at 86% 72%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 60%);
             filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.5));
             opacity: 0.65;
             animation: sparksDrift 5.2s ease-in-out infinite alternate;
@@ -498,8 +419,7 @@ export default function Header() {
             }
           }
           .group:hover > .group-hover\\:animate-navbar-underline {
-            animation: navbar-underline 0.5s cubic-bezier(0.4, 0, 0.2, 1)
-              forwards;
+            animation: navbar-underline 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
           }
         `}</style>
       </div>
@@ -515,8 +435,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
       className="relative inline-block px-4 py-2 rounded-full text-[17px] text-black/80 hover:text-[#D4AF37] transition-colors duration-300 group focus:outline-none"
       style={{
         border: "2px solid transparent",
-        background:
-          "linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.07) 50%, transparent 100%)",
+        background: "linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.07) 50%, transparent 100%)",
       }}
     >
       <span className="relative z-10">{label}</span>
@@ -609,9 +528,7 @@ function MobileServicesAccordion({
           strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={`ml-2 transition-transform duration-200 ${
-            servicesOpen ? "rotate-180" : ""
-          }`}
+          className={`ml-2 transition-transform duration-200 ${servicesOpen ? "rotate-180" : ""}`}
         >
           <polyline points="6 9 12 15 18 9" />
         </svg>
@@ -629,16 +546,10 @@ function MobileServicesAccordion({
         <div ref={contentRef} className="pb-2">
           <ul className="mx-1 rounded-xl border border-black/10 bg-white/70 backdrop-blur-sm overflow-hidden">
             {services.map((service, idx) => {
-              const slug = service
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/(^-|-$)/g, "");
+              const slug = service.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
               const isLast = idx === services.length - 1;
               return (
-                <li
-                  key={slug}
-                  className={!isLast ? "border-b border-black/5" : ""}
-                >
+                <li key={slug} className={!isLast ? "border-b border-black/5" : ""}>
                   <Link
                     href={`/services#${slug}`}
                     prefetch
@@ -647,20 +558,9 @@ function MobileServicesAccordion({
                   >
                     <div className="flex items-start gap-3">
                       <span className="mt-2 h-2 w-2 rounded-full bg-[#D4AF37]" />
-                      <span className="text-[15px] text-gray-900">
-                        {service}
-                      </span>
+                      <span className="text-[15px] text-gray-900">{service}</span>
                     </div>
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#d4af37"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </Link>
