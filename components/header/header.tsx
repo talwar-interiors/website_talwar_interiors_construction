@@ -49,19 +49,21 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#d4af37]/20 shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg">
+    // ✅ Apply Cinzel to the entire header so desktop + mobile inherit it
+    <header className={`${cinzel.className} sticky top-0 z-50 border-b border-[#d4af37]/20 shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg`}>
       {/* Gold gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/10 via-white/80 to-[#d4af37]/10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className={`grid grid-cols-3 items-center h-20 ${cinzel.className}`}>
+        {/* ⬇️ Removed cinzel here (now inherited from header) */}
+        <div className="grid grid-cols-3 items-center h-20">
           {/* Left: Home + SERVICES */}
           <nav aria-label="Primary left" className="hidden md:flex items-center justify-center gap-8">
             <NavLink href="/" label="Home" />
 
             {/* SERVICES trigger + desktop mega panel */}
             <div className="relative" onMouseEnter={scheduleOpen} onMouseLeave={scheduleClose}>
-              {/* CHANGED: button -> Link to /services (kept hover behavior) */}
+              {/* Link to /services (kept hover behavior for mega menu) */}
               <Link
                 href="/services"
                 onClick={() => setMegaOpen(false)}
@@ -352,48 +354,22 @@ export default function Header() {
           }
 
           @keyframes borderSweep {
-            from {
-              transform: rotate(0deg);
-            }
-            to {
-              transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
           }
           @keyframes breathe {
-            0%,
-            100% {
-              opacity: 0.45;
-              filter: blur(8px);
-            }
-            50% {
-              opacity: 0.85;
-              filter: blur(10px);
-            }
+            0%, 100% { opacity: 0.45; filter: blur(8px); }
+            50% { opacity: 0.85; filter: blur(10px); }
           }
           @keyframes sheenSweep {
-            0% {
-              background-position: 120% -10%;
-              opacity: 0;
-            }
-            15% {
-              opacity: 0.9;
-            }
-            45% {
-              background-position: -20% 120%;
-              opacity: 0;
-            }
-            100% {
-              background-position: -20% 120%;
-              opacity: 0;
-            }
+            0% { background-position: 120% -10%; opacity: 0; }
+            15% { opacity: 0.9; }
+            45% { background-position: -20% 120%; opacity: 0; }
+            100% { background-position: -20% 120%; opacity: 0; }
           }
           @keyframes sparksDrift {
-            0% {
-              transform: translate3d(0, 0, 0);
-            }
-            100% {
-              transform: translate3d(2px, -2px, 0);
-            }
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(2px, -2px, 0); }
           }
 
           @media (prefers-reduced-motion: reduce) {
@@ -410,12 +386,8 @@ export default function Header() {
         `}</style>
         <style jsx global>{`
           @keyframes navbar-underline {
-            0% {
-              width: 0;
-            }
-            100% {
-              width: 80%;
-            }
+            0% { width: 0; }
+            100% { width: 80%; }
           }
           .group:hover > .group-hover\\:animate-navbar-underline {
             animation: navbar-underline 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -445,12 +417,8 @@ function NavLink({ href, label }: { href: string; label: string }) {
       />
       <style jsx>{`
         @keyframes navbar-underline {
-          0% {
-            width: 0;
-          }
-          100% {
-            width: 80%;
-          }
+          0% { width: 0; }
+          100% { width: 80%; }
         }
         .group-hover\\:animate-navbar-underline:hover > span[aria-hidden] {
           animation: navbar-underline 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;

@@ -5,13 +5,6 @@ import { Cinzel } from "next/font/google";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
 
-// Server component (no "use client" here) — metadata is allowed
-export const metadata = {
-  title: "Services | Talwar Interiors",
-  description:
-    "Property development, construction, interior & exterior design, fabrication, furniture & accessories, lighting & false ceiling, space planning.",
-};
-
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
 type Service = {
@@ -34,7 +27,7 @@ const services: Service[] = [
       "Site safety & compliance",
       "Quality audits & handover",
     ],
-    image: "/favicon.png",
+    image: "/assets/talwar_nobg.png",
   },
   {
     id: "residential-commercial-construction",
@@ -47,7 +40,7 @@ const services: Service[] = [
       "Material procurement",
       "Snag list & closure",
     ],
-    image: "/favicon.png",
+    image: "/assets/talwar_nobg.png",
   },
   {
     id: "fabrication",
@@ -60,7 +53,7 @@ const services: Service[] = [
       "CNC/laser detailing",
       "On-site installation",
     ],
-    image: "/favicon.png",
+    image: "/assets/talwar_nobg.png",
   },
   {
     id: "interior-exterior-design",
@@ -73,7 +66,7 @@ const services: Service[] = [
       "Lighting & ceiling concepts",
       "Landscape/Facade cues",
     ],
-    image: "/favicon.png",
+    image: "/assets/talwar_nobg.png",
   },
   {
     id: "furniture-fabric-accessories",
@@ -86,7 +79,7 @@ const services: Service[] = [
       "Rugs, art & décor curation",
       "Ergonomics & scale checks",
     ],
-    image: "/favicon.png",
+    image: "/assets/talwar_nobg.png",
   },
   {
     id: "lighting-false-ceiling-solutions",
@@ -99,7 +92,7 @@ const services: Service[] = [
       "Automation readiness",
       "Fixture scheduling",
     ],
-    image: "/favicon.png",
+    image: "/assets/talwar_nobg.png",
   },
   {
     id: "space-planning-optimization",
@@ -112,7 +105,7 @@ const services: Service[] = [
       "Code & accessibility checks",
       "Cost–benefit alternatives",
     ],
-    image: "/favicon.png",
+    image: "/assets/talwar_nobg.png",
   },
 ];
 
@@ -172,21 +165,18 @@ export default function ServicesPage() {
               </p>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                {/* GOLD BUTTON WITH HOVER SHEEN + MICRO-MOTION */}
+                {/* GOLD BUTTON WITH WHITE TEXT */}
                 <Link
                   href="/book"
-                  className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#BA8D2F] bg-gradient-to-b from-[#F2D885] via-[#D4AF37] to-[#B8892B] px-6 py-3 text-sm font-semibold text-black shadow-[0_10px_30px_rgba(212,175,55,0.35)] ring-1 ring-[#D4AF37]/40 transition
+                  className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#BA8D2F] bg-gradient-to-b from-[#F2D885] via-[#D4AF37] to-[#B8892B] px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(212,175,55,0.35)] ring-1 ring-[#D4AF37]/40 transition
                              hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95"
                   aria-label="Book a Consultation"
                 >
-                  {/* soft inner glow */}
                   <span className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(255,255,255,0.35),transparent)]" />
-                  {/* moving sheen on hover (no keyframes, just transition) */}
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.8),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
                   <span className="relative z-10">Book a Consultation</span>
                 </Link>
 
-                {/* keep WhatsApp as-is */}
                 <Link
                   href="https://wa.me/919000701000"
                   target="_blank"
@@ -231,20 +221,18 @@ function ServiceSection({ s, i }: { s: Service; i: number }) {
 
         {/* Content side */}
         <div className="p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-6">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold">
-                <span className="text-[#D4AF37]">{String(i + 1).padStart(2, "0")}.</span>{" "}
+          <div className="max-w-3xl mx-auto text-center">
+            {/* Centered heading in SAME gold gradient as the main Services heading */}
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-wide">
+              <span className="bg-gradient-to-r from-[#D4AF37] to-[#b8892b] bg-clip-text text-transparent">
                 {s.title}
-              </h2>
-              <p className="mt-3 text-gray-600 max-w-3xl">{s.blurb}</p>
-            </div>
-            <span className="shrink-0 rounded-full border border-[#D4AF37]/40 px-3 py-1 text-xs text-[#8b6b1f] bg-[#D4AF37]/10">
-              Talwar Signature
-            </span>
+              </span>
+            </h2>
+            <p className="mt-3 text-gray-600">{s.blurb}</p>
           </div>
 
-          <ul className="mt-6 grid gap-2 text-sm text-gray-700 sm:grid-cols-2">
+          {/* Points */}
+          <ul className="mt-6 grid gap-2 text-sm text-gray-700 sm:grid-cols-2 max-w-3xl mx-auto text-left">
             {s.points.map((p) => (
               <li key={p} className="flex items-start gap-2">
                 <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#D4AF37]/80" />
@@ -253,16 +241,23 @@ function ServiceSection({ s, i }: { s: Service; i: number }) {
             ))}
           </ul>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          {/* Actions: Book + Explore our work (gallery) */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/book"
-              className="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm text-white shadow-sm transition hover:brightness-110 active:scale-95"
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl border border-[#BA8D2F] bg-gradient-to-b from-[#F2D885] via-[#D4AF37] to-[#B8892B] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]/40 transition hover:shadow-[0_12px_34px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95"
             >
-              Book a Consultation
+              <span className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(255,255,255,0.35),transparent)]" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.8),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
+              <span className="relative z-10">Book a Consultation</span>
             </Link>
-            <a href="#top" className="text-sm text-[#8b6b1f] underline-offset-4 hover:underline">
-              Back to top
-            </a>
+
+            <Link
+              href="/gallery"
+              className="inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/60 px-5 py-2.5 text-sm font-semibold text-[#8b6b1f] hover:bg-[#FFF7D6] hover:border-[#D4AF37] transition"
+            >
+              Explore our work →
+            </Link>
           </div>
         </div>
       </div>
