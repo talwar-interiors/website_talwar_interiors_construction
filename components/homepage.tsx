@@ -189,7 +189,7 @@ export default function Homepage() {
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">
-            Why Choose Our Us?
+            Why Choose Us?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="gold-card text-center p-6">
