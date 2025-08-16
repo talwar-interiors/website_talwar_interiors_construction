@@ -42,6 +42,7 @@ export default function Footer() {
 
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
@@ -52,6 +53,7 @@ export default function Footer() {
     let comets: Comet[] = [];
 
     let last = performance.now();
+    let paused = false;
 
     const fit = () => {
       const parent = canvas.parentElement || document.body;
@@ -69,13 +71,11 @@ export default function Footer() {
       fit();
       const isMobile = w < 768;
 
-      // Smaller 3D orbs
       const ORB_COUNT = isMobile ? 14 : 22;
       const SPARK_COUNT = isMobile ? 90 : 140;
 
       orbs = Array.from({ length: ORB_COUNT }, () => {
         const r = rand(isMobile ? 8 : 10, isMobile ? 16 : 24);
-
         return {
           x: rand(0, w),
           y: rand(0, h),
@@ -99,9 +99,7 @@ export default function Footer() {
       comets = [];
     };
 
-    // Draw helpers
     const drawOrb = (o: Orb) => {
-      // fake light from top-left by offsetting inner gradient center
       const lx = o.x - o.r * 0.35;
       const ly = o.y - o.r * 0.35;
 
@@ -118,20 +116,17 @@ export default function Footer() {
       ctx.arc(o.x, o.y, o.r, 0, TAU);
       ctx.fill();
 
-      // subtle rim glow
       ctx.shadowColor = `hsla(${o.hue}, 95%, 72%, ${0.35 * o.alpha * o.glow})`;
       ctx.shadowBlur = 18;
       ctx.beginPath();
       ctx.arc(o.x, o.y, o.r * 0.65, 0, TAU);
       ctx.fill();
 
-      // tiny specular glint
       ctx.globalCompositeOperation = "screen";
       ctx.fillStyle = `rgba(255,255,255,${0.35 * o.alpha})`;
       ctx.beginPath();
       ctx.arc(lx, ly, o.r * 0.08, 0, TAU);
       ctx.fill();
-
       ctx.restore();
     };
 
@@ -144,7 +139,6 @@ export default function Footer() {
       ctx.arc(s.x, s.y, s.size, 0, TAU);
       ctx.fill();
 
-      // tiny cross-star
       ctx.strokeStyle = `rgba(212,175,55,${0.22 * a})`;
       ctx.lineWidth = 0.6;
       ctx.beginPath();
@@ -180,19 +174,20 @@ export default function Footer() {
       ctx.beginPath();
       ctx.arc(c.x, c.y, 2.3, 0, TAU);
       ctx.fill();
-
       ctx.restore();
     };
 
-    // Tick
     const step = () => {
+      if (paused) { rafRef.current = requestAnimationFrame(step); return; }
+      // ctx is closed over; if canvas unmounted, bail safely
+      if (!canvasRef.current || !ctx) return;
+
       const now = performance.now();
       const dt = (now - last) / 16.6667;
       last = now;
 
-      ctx.clearRect(0, 0, w, h);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // faint vignette for depth
       const vGrad = ctx.createRadialGradient(
         w / 2, h / 2, Math.min(w, h) * 0.15,
         w / 2, h / 2, Math.max(w, h) * 0.75
@@ -202,7 +197,6 @@ export default function Footer() {
       ctx.fillStyle = vGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // orbs
       for (const o of orbs) {
         o.wobble += o.wobbleSpeed * dt;
         o.x += (o.vx + Math.sin(o.wobble) * 0.16) * dt * 1.2;
@@ -216,7 +210,6 @@ export default function Footer() {
         drawOrb(o);
       }
 
-      // sparks
       for (const s of sparks) {
         s.life += (1 / 60) * dt;
         if (s.life > s.maxLife) {
@@ -235,7 +228,6 @@ export default function Footer() {
         drawSpark(s);
       }
 
-      // comets
       if (chance(0.012)) {
         const fromLeft = chance(0.5);
         const y = rand(h * 0.1, h * 0.6);
@@ -265,13 +257,18 @@ export default function Footer() {
       for (const s of sparks) { s.x = clamp(s.x, 0, w); s.y = clamp(s.y, 0, h); }
     };
 
+    const onVis = () => { paused = document.hidden; };
+
     init();
     last = performance.now();
     rafRef.current = requestAnimationFrame(step);
     window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", onVis);
+
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, [motionOK]);
 
@@ -336,20 +333,38 @@ export default function Footer() {
 
             {/* socials */}
             <div className="mt-5 flex items-center gap-4">
-              <a href="https://www.instagram.com/talwarinteriors" target="_blank" rel="noopener noreferrer"
-                 className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]" aria-label="Instagram" title="Instagram">
+              <a
+                href="https://www.instagram.com/talwarinteriors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
+                aria-label="Instagram"
+                title="Instagram"
+              >
                 <svg className="h-5 w-5 transition group-hover:rotate-[8deg]" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm4.25 3.25a5.25 5.25 0 1 1 0 10.5 5.25 5.25 0 0 1 0-10.5zm0 1.5a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5zm5.25.75a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                 </svg>
               </a>
-              <a href="https://www.facebook.com/talwarinteriors" target="_blank" rel="noopener noreferrer"
-                 className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]" aria-label="Facebook" title="Facebook">
+              <a
+                href="https://www.facebook.com/talwarinteriors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
+                aria-label="Facebook"
+                title="Facebook"
+              >
                 <svg className="h-5 w-5 transition group-hover:rotate-[8deg]" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.405 24 24 23.408 24 22.674V1.326C24 .592 23.405 0 22.675 0"/>
                 </svg>
               </a>
-              <a href="https://www.linkedin.com/company/talwarinteriors" target="_blank" rel="noopener noreferrer"
-                 className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]" aria-label="LinkedIn" title="LinkedIn">
+              <a
+                href="https://www.linkedin.com/company/talwarinteriors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-full p-2 text-black/70 transition hover:bg-[#d4af37]/10 hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
+                aria-label="LinkedIn"
+                title="LinkedIn"
+              >
                 <svg className="h-5 w-5 transition group-hover:rotate-[8deg]" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/>
                 </svg>
@@ -357,9 +372,15 @@ export default function Footer() {
             </div>
 
             <div className="mt-6">
-              <Link href="/book"
-                className="inline-flex items-center justify-center rounded-2xl border border-[#BA8D2F] bg-gradient-to-b from-[#F2D885] via-[#D4AF37] to-[#B8892B] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(212,175,55,0.30)] ring-1 ring-[#D4AF37]/40 transition hover:shadow-[0_12px_34px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
-                Book an Appointment
+              <Link
+                href="/book"
+                className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37] bg-transparent px-6 py-3 text-sm font-semibold text-[#D4AF37] shadow-[0_10px_30px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/40 transition
+                          hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)] hover:bg-[#D4AF37]/10 active:scale-95"
+                aria-label="Book a Consultation"
+              >
+                <span className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(212,175,55,0.25),transparent)]" />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(212,175,55,0.6),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                <span className="relative z-10">Book a Consultation</span>
               </Link>
             </div>
           </div>
@@ -376,8 +397,10 @@ export default function Footer() {
                 { label: "Book Appointment", href: "/book" },
               ].map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href}
-                    className="group inline-flex items-center gap-2 text-black/80 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+                  <Link
+                    href={item.href}
+                    className="group inline-flex items-center gap-2 text-black/80 hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
+                  >
                     <span className="relative">
                       {item.label}
                       <span className="pointer-events-none absolute -bottom-0.5 left-0 h-[2px] w-0 bg-gradient-to-r from-[#fff0c2] via-[#d4af37] to-[#b8892b] transition-all duration-300 group-hover:w-full" />
@@ -395,19 +418,23 @@ export default function Footer() {
           <nav className="md:col-span-4" aria-label="Services">
             <h3 className="text-lg font-semibold text-[#D4AF37]">Services</h3>
             <div className="mt-2 h-px w-40 bg-gradient-to-r from-[#d4af37] to-transparent" aria-hidden="true" />
-            <ul className="mt-5 grid grid-cols-1 gap-x-6 gap-y-3 text-[15px] sm:grid-cols-2">
+            {/* masonry-style columns to avoid big gaps */}
+            <ul className="mt-5 columns-1 sm:columns-2 gap-x-10 [column-fill:_balance] text-[15px]">
               {[
-                { label: "Property Development & Civil Contracting", id: "property-development-civil-contracting" },
-                { label: "Residential & Commercial Construction", id: "residential-commercial-construction" },
-                { label: "Fabrication", id: "fabrication" },
                 { label: "Interior & Exterior Design", id: "interior-exterior-design" },
                 { label: "Furniture, Fabric & Accessories", id: "furniture-fabric-accessories" },
                 { label: "Lighting & False Ceiling Solutions", id: "lighting-false-ceiling-solutions" },
                 { label: "Space Planning & Optimization", id: "space-planning-optimization" },
+                { label: "Fabrication", id: "fabrication" },
+                { label: "Residential & Commercial Construction", id: "residential-commercial-construction" },
+                { label: "Property Development & Civil Contracting", id: "property-development-civil-contracting" },
+                { label: "Job Works", id: "job-works" },
               ].map((s) => (
-                <li key={s.id} className="leading-snug">
-                  <Link href={`/services#${s.id}`}
-                    className="group inline-flex items-start gap-2 text-black/80 hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+                <li key={s.id} className="mb-3 break-inside-avoid leading-snug">
+                  <Link
+                    href={`/services#${s.id}`}
+                    className="group inline-flex items-start gap-2 text-black/80 hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
+                  >
                     <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#D4AF37]/80 transition group-hover:scale-110" />
                     <span className="relative">
                       {s.label}
@@ -426,15 +453,21 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 text-sm text-black/80">
           <p>©{year} Talwar Interiors · Developed by Osman</p>
           <div className="flex items-center gap-6">
-            <Link href="/terms-conditions" className="hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+            <Link
+              href="/terms-conditions"
+              className="hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
+            >
               Terms & Conditions
             </Link>
-            <Link href="/privacy-policy" className="hover:text-[#D4AF37] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]">
+            <Link
+              href="/privacy-policy"
+              className="hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
+            >
               Privacy Policy
             </Link>
             <a
               href="#top"
-              className="inline-flex items-center gap-1 rounded-full border border-[#d4af37]/50 px-3 py-1.5 text-xs text-[#8b6b1f] transition hover:border-[#d4af37] hover:bg-[#fff9e6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d4af37]"
+              className="inline-flex items-center gap-1 rounded-full border border-[#d4af37]/50 px-3 py-1.5 text-xs text-[#8b6b1f] transition hover:border-[#d4af37] hover:bg-[#fff9e6] focus-visible:outline-2 focus-visible:outline-[#d4af37] focus-visible:outline-offset-2"
               aria-label="Back to top"
             >
               ↑ Top

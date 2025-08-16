@@ -17,47 +17,8 @@ type Service = {
 
 const services: Service[] = [
   {
-    id: "property-development-civil-contracting",
-    title: "Property Development & Civil Contracting",
-    blurb:
-      "End-to-end civil works with quality control, statutory compliance, and on-site supervision.",
-    points: [
-      "Structural planning & BOQs",
-      "Vendor & contractor management",
-      "Site safety & compliance",
-      "Quality audits & handover",
-    ],
-    image: "/assets/talwar_nobg.png",
-  },
-  {
-    id: "residential-commercial-construction",
-    title: "Residential & Commercial Construction",
-    blurb:
-      "Turnkey builds for homes, offices, and retail—delivered on schedule with transparent execution.",
-    points: [
-      "Project scheduling & tracking",
-      "MEP coordination",
-      "Material procurement",
-      "Snag list & closure",
-    ],
-    image: "/assets/talwar_nobg.png",
-  },
-  {
-    id: "fabrication",
-    title: "Fabrication",
-    blurb:
-      "Custom metal/wood/glass fabrication tailored to fit, finish, and function.",
-    points: [
-      "MS/SS works & powder coating",
-      "Joinery & carpentry",
-      "CNC/laser detailing",
-      "On-site installation",
-    ],
-    image: "/assets/talwar_nobg.png",
-  },
-  {
     id: "interior-exterior-design",
-    title: "Interior & Exterior Design",
+    title: "Interior Designs",
     blurb:
       "Concept-to-detail design—layouts, elevations, 3D, and material palettes for timeless spaces.",
     points: [
@@ -83,7 +44,7 @@ const services: Service[] = [
   },
   {
     id: "lighting-false-ceiling-solutions",
-    title: "Lighting & False Ceiling Solutions",
+    title: "False Ceiling & Lighting Solutions",
     blurb:
       "Layered lighting and ceiling systems that balance aesthetics with performance.",
     points: [
@@ -107,7 +68,62 @@ const services: Service[] = [
     ],
     image: "/assets/talwar_nobg.png",
   },
+  {
+    id: "fabrication",
+    title: "Fabrication",
+    blurb:
+      "Custom metal/wood/glass fabrication tailored to fit, finish, and function.",
+    points: [
+      "MS/SS works & powder coating",
+      "Joinery & carpentry",
+      "CNC/laser detailing",
+      "On-site installation",
+    ],
+    image: "/assets/talwar_nobg.png",
+  },
+  {
+    id: "residential-commercial-construction",
+    title: "Residential & Commercial Construction",
+    blurb:
+      "Turnkey builds for homes, offices, and retail—delivered on schedule with transparent execution.",
+    points: [
+      "Project scheduling & tracking",
+      "MEP coordination",
+      "Material procurement",
+      "Snag list & closure",
+    ],
+    image: "/assets/talwar_nobg.png",
+  },
+  {
+    id: "property-development-civil-contracting",
+    title: "Property Development & Civil Contracting",
+    blurb:
+      "End-to-end civil works with quality control, statutory compliance, and on-site supervision.",
+    points: [
+      "Structural planning & BOQs",
+      "Vendor & contractor management",
+      "Site safety & compliance",
+      "Quality audits & handover",
+    ],
+    image: "/assets/talwar_nobg.png",
+  },
+  {
+    id: "job-works",
+    title: "Job Works",
+    blurb:
+      "Complete solutions for finishing and improvement works with precision and care.",
+    points: [
+      "Painting",
+      "Flooring",
+      "Ceilings",
+      "Civil works",
+      "Renovations",
+      "Drapes",
+    ],
+    image: "/assets/talwar_nobg.png",
+  },
 ];
+
 
 export default function ServicesPage() {
   return (
@@ -165,17 +181,17 @@ export default function ServicesPage() {
               </p>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                {/* GOLD BUTTON WITH WHITE TEXT */}
                 <Link
                   href="/book"
-                  className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#BA8D2F] bg-gradient-to-b from-[#F2D885] via-[#D4AF37] to-[#B8892B] px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(212,175,55,0.35)] ring-1 ring-[#D4AF37]/40 transition
-                             hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95"
+                  className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37] bg-transparent px-6 py-3 text-sm font-semibold text-[#D4AF37] shadow-[0_10px_30px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/40 transition
+                            hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)] hover:bg-[#D4AF37]/10 active:scale-95"
                   aria-label="Book a Consultation"
                 >
-                  <span className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(255,255,255,0.35),transparent)]" />
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.8),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                  <span className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(212,175,55,0.25),transparent)]" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(212,175,55,0.6),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
                   <span className="relative z-10">Book a Consultation</span>
                 </Link>
+
 
                 <Link
                   href="https://wa.me/919000701000"
@@ -244,13 +260,16 @@ function ServiceSection({ s, i }: { s: Service; i: number }) {
           {/* Actions: Book + Explore our work (gallery) */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/book"
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl border border-[#BA8D2F] bg-gradient-to-b from-[#F2D885] via-[#D4AF37] to-[#B8892B] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]/40 transition hover:shadow-[0_12px_34px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95"
-            >
-              <span className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(255,255,255,0.35),transparent)]" />
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.8),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
-              <span className="relative z-10">Book a Consultation</span>
-            </Link>
+                href="/book"
+                className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37] bg-transparent px-6 py-3 text-sm font-semibold text-[#D4AF37] shadow-[0_10px_30px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/40 transition
+                          hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)] hover:bg-[#D4AF37]/10 active:scale-95"
+                aria-label="Book a Consultation"
+              >
+                <span className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(212,175,55,0.25),transparent)]" />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(212,175,55,0.6),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
+                <span className="relative z-10">Book a Consultation</span>
+              </Link>
+
 
             <Link
               href="/gallery"

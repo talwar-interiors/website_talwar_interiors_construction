@@ -8,14 +8,16 @@ import { Cinzel } from "next/font/google";
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
 const SERVICES = [
-  "Property Development & Civil Contracting",
-  "Residential & Commercial Construction",
-  "Fabrication",
-  "Interior & Exterior Design",
-  "Furniture, Fabric & Accessories",
-  "Lighting & False Ceiling Solutions",
-  "Space Planning & Optimization",
+  "Interior & Exterior Design",             
+  "Furniture, Fabric & Accessories",        
+  "Lighting & False Ceiling Solutions",     
+  "Space Planning & Optimization",          
+  "Fabrication",                            
+  "Residential & Commercial Construction", 
+  "Property Development & Civil Contracting", 
+  "Job Works",                              
 ];
+
 
 export default function Header() {
   const [open, setOpen] = useState(false);

@@ -11,7 +11,7 @@ const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 const SERVICES = [
   {
     id: "interior-exterior-design",
-    title: "Interior & Exterior Design",
+    title: "Interior Designs",
     blurb:
       "Concept-to-detail design—layouts, elevations, 3D, and material palettes for timeless spaces.",
     points: [
@@ -35,7 +35,7 @@ const SERVICES = [
   },
   {
     id: "lighting-false-ceiling-solutions",
-    title: "Lighting & False Ceiling Solutions",
+    title: "False Ceiling & Lighting Solutions",
     blurb:
       "Layered lighting and ceiling systems that balance aesthetics with performance.",
     points: [
@@ -73,15 +73,16 @@ export default function Homepage() {
         <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">Transform Your Space</h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
-            Discover the perfect blend of elegance and comfort with our curated interior design solutions
+            Transform your space into a realm of unparalleled elegance. Our design experts await to
+            bring your vision to life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300">
+            {/* <button className="bg-white text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors duration-300">
               Explore Designs
             </button>
             <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-gray-900 transition-colors duration-300">
               Get Consultation
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -101,11 +102,16 @@ export default function Homepage() {
             </h2>
             <span className="mt-3 inline-block h-1 w-20 rounded-full bg-[#D4AF37] mx-auto" />
             <p className="mt-6 text-gray-700 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
-              Step into a world where design meets passion and every detail reflects you. Whether you dream of a warm,
-              inviting home or a bold, statement-making office, we bring your vision to life with creativity, precision,
-              and timeless style. From colors and fabrics to finishes and furniture, every choice is uniquely yours.
-              With fresh ideas and meticulous attention to detail, we create spaces that inspire, delight, and truly feel like home.
+              Step into a world where design meets passion and every detail captures your essence. 
+              Whether you dream of a warm, inviting home or a bold statement making an office, 
+              we bring your vision to life with creativity, precision, and timeless style.
+              <br /><br />
+              Every aspect, from colors and fabrics to finishes including furniture, is uniquely chosen 
+              to define your space. Every choice is tailored uniquely as per your imagination. 
+              With fresh ideas and meticulous attention to detail, we create spaces that inspire, delight, 
+              and truly feel like home.
             </p>
+
           </div>
 
           <div
@@ -210,7 +216,7 @@ export default function Homepage() {
               </div>
               <h3 className="text-xl font-semibold mb-3 text-gray-800">Custom Design</h3>
               <p className="text-gray-600">
-                Tailored solutions that reflect your unique style and preferences
+                Tailored solutions crafted to bring your imagination to life while honoring your preferences
               </p>
             </div>
 
@@ -254,7 +260,7 @@ export default function Homepage() {
               </div>
               <h3 className="text-xl font-semibold mb-3 text-gray-800">Timely Delivery</h3>
               <p className="text-gray-600">
-                Efficient project management ensuring your space is ready when promised
+                Project management that delivers your space as and when promised
               </p>
             </div>
           </div>
