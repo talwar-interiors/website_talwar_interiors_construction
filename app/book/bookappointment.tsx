@@ -119,7 +119,7 @@ export default function BookAppointment() {
       // console.log("insert payload →", JSON.stringify(payload));
 
       const { data, error } = await supabase
-        .from("customer_details")          // your table
+        .from("talwar_database")          // your table
         .insert(payload)                   // SINGLE object (not [payload])
         .select("id")
         .single();
