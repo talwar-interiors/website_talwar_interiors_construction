@@ -103,7 +103,7 @@ export default function Homepage() {
             <span className="mt-3 inline-block h-1 w-20 rounded-full bg-[#D4AF37] mx-auto" />
             <p className="mt-6 text-gray-700 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
               Step into a world where design meets passion and every detail captures your essence. 
-              Whether you dream of a warm, inviting home or a bold statement making an office, 
+              Whether you dream of a warm, inviting home or a bold statement making office, 
               we bring your vision to life with creativity, precision, and timeless style.
               <br /><br />
               Every aspect, from colors and fabrics to finishes including furniture, is uniquely chosen 

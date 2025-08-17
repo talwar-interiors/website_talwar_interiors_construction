@@ -1,6 +1,6 @@
-import Header from "../components/header/header";
-import Homepage from "../components/homepage";
-import Footer from "../components/footer/footer";
+import Header from "@/components/header/header";
+import Homepage from "@/components/homepage";
+import Footer from "@/components/footer/footer";
 import { Cinzel } from "next/font/google";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
