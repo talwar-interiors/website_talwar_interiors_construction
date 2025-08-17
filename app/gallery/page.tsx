@@ -35,7 +35,6 @@ const FILES: string[] = [
   "19.jpg",
   "20.jpg",
   "21.jpg",
-  "22.jpg",
   "23.jpg",
   "24.jpg",
   "25.jpg",
