@@ -283,9 +283,14 @@ setBookingId(newId);
                       Email Address
                     </label>
                     <input
+                      // type="email"
+                      // id="email"
+                      // name="email"
+                      // value={formData.mail}
+                      // onChange={handleChange}
                       type="email"
                       id="email"
-                      name="email"
+                      name="mail"
                       value={formData.mail}
                       onChange={handleChange}
                       className="w-full bg-gray-50 border border-[#d4af37]/30 focus:border-[#d4af37] text-gray-800 rounded-lg px-4 py-3 outline-none transition-colors duration-200 placeholder-gray-400"
@@ -363,12 +368,12 @@ setBookingId(newId);
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="message" className="block text-sm font-medium text-[#d4af37]">
+                  <label htmlFor="text" className="block text-sm font-medium text-[#d4af37]">
                     Your Vision
                   </label>
                   <textarea
-                    id="message"
-                    name="message"
+                    id="text"
+                    name="text"
                     rows={4}
                     value={formData.text}
                     onChange={handleChange}
