@@ -27,11 +27,12 @@ const envOk = !!supabase;
 /** ── Types ─────────────────────────────────────────────────────────────── */
 type FormData = {
   name: string;
-  email: string;
+  mail: string;
   phone: string;
   date: string;   // YYYY-MM-DD from <input type="date">
   time: string;   // your select values (e.g., "morning" | "afternoon" | "evening")
-  message: string;
+  location: string;
+  text: string;
 };
 
 type Particle = {
@@ -46,11 +47,12 @@ export default function BookAppointment() {
   /** ── Form + UI state ────────────────────────────────────────────────── */
   const [formData, setFormData] = useState<FormData>({
     name: "",
-    email: "",
+    mail: "",
     phone: "",
     date: "",
     time: "",
-    message: "",
+    location: "",
+    text: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,7 +89,7 @@ export default function BookAppointment() {
     setBookingId(null);
 
     // Basic validation
-    if (!formData.name || !formData.email || !formData.phone) {
+    if (!formData.name || !formData.mail || !formData.phone) {
       setErrorMsg("Please fill in name, email, and phone.");
       return;
     }
@@ -103,11 +105,13 @@ export default function BookAppointment() {
       // Build payload matching your *actual* DB columns
       const payload = {
         name: formData.name.trim(),
-        email: formData.email.trim(),      // column is email
+        email: formData.mail.trim(),      // column is email
         phone: formData.phone.trim(),
         date: formData.date || null,       // if DATE column, avoid empty string
-        time: formData.time || null,       // assuming TEXT; keep as-is
-        message: formData.message?.trim() || null,
+        time: formData.time || null,
+        location: formData.location?.trim() || null,
+        // assuming TEXT; keep as-is
+        message: formData.text?.trim() || null,
         // (omit created_at if your table doesn't have it or has a default)
       };
 
@@ -140,11 +144,12 @@ setBookingId(newId);
         setBookingId(null);
         setFormData({
           name: "",
-          email: "",
+          mail: "",
           phone: "",
           date: "",
           time: "",
-          message: "",
+          location: "",
+          text: "",
         });
       }, 3500);
     } catch (err: unknown) {
@@ -281,7 +286,7 @@ setBookingId(newId);
                       type="email"
                       id="email"
                       name="email"
-                      value={formData.email}
+                      value={formData.mail}
                       onChange={handleChange}
                       className="w-full bg-gray-50 border border-[#d4af37]/30 focus:border-[#d4af37] text-gray-800 rounded-lg px-4 py-3 outline-none transition-colors duration-200 placeholder-gray-400"
                       placeholder="your.email@example.com"
@@ -343,6 +348,21 @@ setBookingId(newId);
                 </div>
 
                 <div className="space-y-2">
+                  <label htmlFor="location" className="block text-sm font-medium text-[#d4af37]">
+                    Your Site Location
+                  </label>
+                  <textarea
+                    id="location"
+                    name="location"
+                    rows={4}
+                    value={formData.location}
+                    onChange={handleChange}
+                    className="w-full bg-gray-50 border border-[#d4af37]/30 focus:border-[#d4af37] text-gray-800 rounded-lg px-4 py-3 outline-none transition-colors duration-200 placeholder-gray-400"
+                    placeholder="Mention the site location if any..."
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <label htmlFor="message" className="block text-sm font-medium text-[#d4af37]">
                     Your Vision
                   </label>
@@ -350,7 +370,7 @@ setBookingId(newId);
                     id="message"
                     name="message"
                     rows={4}
-                    value={formData.message}
+                    value={formData.text}
                     onChange={handleChange}
                     className="w-full bg-gray-50 border border-[#d4af37]/30 focus:border-[#d4af37] text-gray-800 rounded-lg px-4 py-3 outline-none transition-colors duration-200 placeholder-gray-400"
                     placeholder="Tell us about your dream space..."
