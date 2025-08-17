@@ -6,34 +6,42 @@ import { Cinzel } from "next/font/google";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
-type TItem = { quote: string; name: string; meta: string };
+type TItem = { quote: string; name: string; meta: string; rating: number };
 
 const TESTIMONIALS: TItem[] = [
-  { quote: "Talwar translated a bold brief into a warm, luxurious home. Materials, lighting and detailing were world-class—delivered on time with absolute clarity.", name: "A. Sharma", meta: "Private Residence — Jubilee Hills" },
-  { quote: "We trusted them with a complete office build—60 days, zero compromises. The result is tailored, timeless and deeply functional. Worth every rupee.", name: "R. Mehta", meta: "Corporate HQ — Banjara Hills" },
-  { quote: "They balanced vision with execution. Joinery, finishes and ergonomics are impeccable. Guests still ask who designed our space.", name: "S. Rao", meta: "Luxury Apartment — Kokapet" },
-  { quote: "From the first mood boards to handover, everything felt precise. Budgets were transparent, schedules honored, outcome beyond expectation.", name: "N. Kapoor", meta: "Premium Villa — Nanakramguda" },
-  { quote: "Retail reimagined with intelligent lighting and meticulous fabrication. Sales uplifted within weeks—design that truly performs.", name: "A. Verma", meta: "Retail Flagship — Gachibowli" },
-  { quote: "Creative and exacting. The palette, proportions and detailing show a strong point of view—our space feels iconic.", name: "D. Iyer", meta: "Penthouse — Financial District" },
-  { quote: "A complex renovation made effortless—tight sequencing, quiet site, and a finish that feels bespoke.", name: "P. Chatterjee", meta: "Heritage Remodel — Somajiguda" },
-  { quote: "They understood our lifestyle and translated it into thoughtful spaces—smart storage, perfect lighting, textures that age beautifully.", name: "R. & K. Menon", meta: "Family Home — Madhapur" },
-  { quote: "Structured, premium and transparent. They protected our time and investment while elevating every decision.", name: "M. Qureshi", meta: "Show Apartment — Hitech City" },
-  { quote: "From concept to execution, everything felt intentional. The result is calm, sophisticated and built to last.", name: "V. Deshmukh", meta: "Weekend Home — Gandipet" },
+  { quote: "Talwar translated a bold brief into a warm, luxurious home. Materials, lighting and detailing were world-class—delivered with absolute clarity.", name: "Armaan Sharma", meta: "Private Residence — Jubilee Hills", rating: 4.9 },
+  { quote: "We trusted them with a complete office build in 60 days. The result is tailored, timeless, and deeply functional. Worth every rupee.", name: "Rhea Mehta", meta: "Corporate HQ — Banjara Hills", rating: 4.8 },
+  { quote: "They balanced vision with execution—joinery, finishes and ergonomics are impeccable. Guests still ask who designed our space.", name: "Savita Rao", meta: "Luxury Apartment — Kokapet", rating: 4.7 },
+  { quote: "From mood boards to handover, everything felt precise. Budgets were transparent, schedules honored, outcome beyond expectation.", name: "Nikhil Kapoor", meta: "Premium Villa — Nanakramguda", rating: 5.0 },
+  { quote: "Retail reimagined with intelligent lighting and meticulous fabrication. Sales lifted within weeks—design that truly performs.", name: "Aarav Verma", meta: "Retail Flagship — Gachibowli", rating: 4.6 },
+  { quote: "Creative and exacting. The palette, proportions and detailing show a strong point of view—our space feels iconic.", name: "Divya Iyer", meta: "Penthouse — Financial District", rating: 4.5 },
+  // Slightly negative but ends positive (timing)
+  { quote: "Installation finished five days beyond the commitment due to a bespoke stone batch. The updates were consistent, and the final finish is exquisite—absolutely forgivable for the quality.", name: "Aditya Malhotra", meta: "Townhouse — Banjara Hills", rating: 4.3 },
+  { quote: "They understood our lifestyle and translated it into thoughtful spaces—smart storage, perfect lighting, textures that age beautifully.", name: "Radhika & Kabir Menon", meta: "Family Home — Madhapur", rating: 4.8 },
+  // Another gentle critique (communication) but ends strong
+  { quote: "A couple of site meetings started late, which worried me at first. But the craftsmanship and finish surpassed expectations—the result is refined, cohesive and worth the patience.", name: "Ishaan Bhattacharya", meta: "Show Apartment — Hitech City", rating: 4.0 },
+  { quote: "From concept to execution, everything felt intentional. The result is calm, sophisticated and built to last.", name: "Vihaan Deshmukh", meta: "Weekend Home — Gandipet", rating: 4.9 },
 ];
 
-function Stars() {
+function Stars({ rating }: { rating: number }) {
+  // Full >=1, “half-ish” >=0.5, else empty — represented via opacity (SSR-safe).
   return (
-    <div className="flex gap-1" aria-hidden>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} viewBox="0 0 24 24" width="16" height="16" className="shrink-0">
-          <path
-            d="M12 17.27l6.18 3.73-1.64-7.03L21 9.24l-7.19-.62L12 2 10.19 8.62 3 9.24l4.46 4.73L5.82 21z"
-            fill="#D4AF37"
-            stroke="#B8892B"
-            strokeWidth="0.5"
-          />
-        </svg>
-      ))}
+    <div className="flex items-center gap-1" aria-label={`${rating.toFixed(1)} out of 5`}>
+      {Array.from({ length: 5 }).map((_, i) => {
+        const delta = rating - i;
+        const opacity = delta >= 1 ? 1 : delta >= 0.5 ? 0.6 : 0.2;
+        return (
+          <svg key={i} viewBox="0 0 24 24" width="16" height="16" className="shrink-0">
+            <path
+              d="M12 17.27l6.18 3.73-1.64-7.03L21 9.24l-7.19-.62L12 2 10.81 8.62 3 9.24l4.46 4.73L5.82 21z"
+              fill="#D4AF37"
+              opacity={opacity}
+              stroke="#B8892B"
+              strokeWidth="0.5"
+            />
+          </svg>
+        );
+      })}
     </div>
   );
 }
@@ -42,8 +50,10 @@ function Card({ t }: { t: TItem }) {
   return (
     <article className="t-card w-[78vw] sm:w-[420px] md:w-[560px] shrink-0 rounded-2xl bg-white/95 p-6 sm:p-7 backdrop-blur">
       <div className="flex items-center justify-between">
-        <Stars />
-        <span className="text-[11px] font-semibold tracking-wide text-[#8b6b1f]">5.0 RATED</span>
+        <Stars rating={t.rating} />
+        <span className="text-[11px] font-semibold tracking-wide text-[#8b6b1f]">
+          {t.rating.toFixed(1)} RATED
+        </span>
       </div>
       <div className="relative mt-4">
         <div className="select-none text-7xl leading-none text-[#D4AF37]/10">“</div>
@@ -83,17 +93,16 @@ export default function Testimonials() {
     if (!el) return;
     setDragging(false);
     el.releasePointerCapture?.(e.pointerId);
-    // resume autoslide a moment later
     setTimeout(() => setIsAuto(true), 600);
   };
 
-  // Gentle auto-scroll (no randomness → no hydration issues)
+  // Gentle auto-scroll
   useEffect(() => {
     const el = railRef.current;
     if (!el) return;
     let raf = 0;
     let last = 0;
-    const speed = 0.18; // px per ms (~10.8 px/sec)
+    const speed = 0.18;
     const step = (t: number) => {
       if (!last) last = t;
       const dt = t - last;
@@ -101,10 +110,7 @@ export default function Testimonials() {
 
       if (isAuto && !dragging) {
         el.scrollLeft += dt * speed;
-        // loop
-        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) {
-          el.scrollLeft = 0;
-        }
+        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) el.scrollLeft = 0;
       }
       raf = requestAnimationFrame(step);
     };
@@ -148,16 +154,12 @@ export default function Testimonials() {
           <div className="mx-auto mt-4 h-[3px] w-24 rounded-full bg-gradient-to-r from-[#FFF5CC] via-[#D4AF37] to-[#C08E2F] shadow-[0_0_12px_rgba(212,175,55,0.55)]" />
         </div>
 
-        {/* Mobile: drag + gentle autoslide + peeking next card */}
+        {/* Mobile */}
         <div className="relative mt-10 md:hidden">
-          {/* edge fades */}
           <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-white to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent" />
-
-          {/* swipe hint */}
           <div className="absolute -top-6 right-3 text-[11px] font-semibold tracking-wide text-[#8b6b1f]/80">
-            Swipe
-            <span className="inline-block translate-x-1 animate-pulse">→</span>
+            Swipe<span className="inline-block translate-x-1 animate-pulse">→</span>
           </div>
 
           <div
@@ -181,7 +183,7 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Desktop: slowed dual marquees */}
+        {/* Desktop */}
         <div className="relative hidden md:block mt-12">
           <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent" />
@@ -207,7 +209,7 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* CTA: translucent, gold border & text */}
+        {/* CTA */}
         <div className="mt-10 flex justify-center">
           <Link
             href="/book"
@@ -225,7 +227,6 @@ export default function Testimonials() {
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Ambient gold sweeps — slow */
         @keyframes gold-sweep {
           0% { transform: translateX(-18%); opacity: 0.3; }
           50% { opacity: 0.55; }
@@ -234,7 +235,6 @@ export default function Testimonials() {
         .animate-gold-sweep { animation: gold-sweep 12s ease-in-out infinite alternate; }
         .animate-gold-sweep-slow { animation: gold-sweep 18s ease-in-out infinite alternate; }
 
-        /* Desktop marquee — slow */
         .marquee { overflow: hidden; width: 100%; }
         .marquee-track {
           display: inline-flex;
@@ -249,7 +249,6 @@ export default function Testimonials() {
         @keyframes marquee-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes marquee-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-        /* Luxe gold keyline card */
         .t-card {
           position: relative;
           box-shadow: 0 10px 28px rgba(212, 175, 55, 0.16), 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -293,7 +292,6 @@ export default function Testimonials() {
           z-index: -1;
         }
 
-        /* Translucent, gold-outline CTA with sheen */
         .t-outline-cta {
           color: #b8892b;
           border-color: rgba(212, 175, 55, 0.75);
