@@ -111,7 +111,7 @@ export default function BookAppointment() {
         time: formData.time || null,
         location: formData.location?.trim() || null,
         // assuming TEXT; keep as-is
-        message: formData.text?.trim() || null,
+        text: formData.text?.trim() || null,
         // (omit created_at if your table doesn't have it or has a default)
       };
 
