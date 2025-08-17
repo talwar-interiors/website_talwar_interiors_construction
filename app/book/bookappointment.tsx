@@ -105,7 +105,7 @@ export default function BookAppointment() {
       // Build payload matching your *actual* DB columns
       const payload = {
         name: formData.name.trim(),
-        email: formData.mail.trim(),      // column is email
+        mail: formData.mail.trim(),      // column is email
         phone: formData.phone.trim(),
         date: formData.date || null,       // if DATE column, avoid empty string
         time: formData.time || null,
@@ -279,7 +279,7 @@ setBookingId(newId);
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="email" className="block text-sm font-medium text-[#d4af37]">
+                    <label htmlFor="mail" className="block text-sm font-medium text-[#d4af37]">
                       Email Address
                     </label>
                     <input
@@ -289,7 +289,7 @@ setBookingId(newId);
                       // value={formData.mail}
                       // onChange={handleChange}
                       type="email"
-                      id="email"
+                      id="mail"
                       name="mail"
                       value={formData.mail}
                       onChange={handleChange}
