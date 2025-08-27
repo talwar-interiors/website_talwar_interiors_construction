@@ -60,7 +60,7 @@ export default function Homepage() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <video
-            src="/assets/landingpage.webm"
+            src="/assets/landingpage.mp4"
             autoPlay
             muted
             loop

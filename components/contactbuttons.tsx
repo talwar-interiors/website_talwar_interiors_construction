@@ -74,9 +74,8 @@ export default function ContactButtons() {
 
         .contact-button {
           position: relative;
-          background: rgba(255, 255, 255, 0.92);
-          -webkit-backdrop-filter: blur(8px);
-          backdrop-filter: blur(8px);
+          /* A solid color is much more performant than backdrop-filter for scrolling */
+          background: rgb(253, 250, 242);
           border: 2px solid var(--brand-gold);
           border-radius: 999px;
           padding: 10px;           /* icon-only by default */
@@ -84,9 +83,10 @@ export default function ContactButtons() {
           display: inline-flex;
           align-items: center;
           min-height: 48px;
-          transform: translateZ(0);
+          transform: translateZ(0); /* Promotes to its own compositor layer */
+          will-change: transform;   /* Hint for browser animation optimization */
           overflow: hidden;        /* for ripple + shine */
-          transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, padding 0.25s ease;
+          transition: transform 0.2s ease, background 0.2s ease, padding 0.25s ease;
           animation: floaty 4.5s ease-in-out infinite;
           box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18);
 
