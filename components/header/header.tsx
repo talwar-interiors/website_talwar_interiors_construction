@@ -8,7 +8,7 @@ import { Cinzel } from "next/font/google";
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
 const SERVICES = [
-  "Interior & Exterior Design",             
+  "Interior Designs",             
   "Furniture, Fabric & Accessories",        
   "Lighting & False Ceiling Solutions",     
   "Space Planning & Optimization",          

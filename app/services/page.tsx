@@ -27,7 +27,7 @@ const services: Service[] = [
       "Lighting & ceiling concepts",
       "Landscape/Facade cues",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/20.png",
   },
   {
     id: "furniture-fabric-accessories",
@@ -40,7 +40,7 @@ const services: Service[] = [
       "Rugs, art & décor curation",
       "Ergonomics & scale checks",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/19.jpg",
   },
   {
     id: "lighting-false-ceiling-solutions",
@@ -53,7 +53,7 @@ const services: Service[] = [
       "Automation readiness",
       "Fixture scheduling",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/32.jpg",
   },
   {
     id: "space-planning-optimization",
@@ -66,7 +66,7 @@ const services: Service[] = [
       "Code & accessibility checks",
       "Cost–benefit alternatives",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/24.jpg",
   },
   {
     id: "fabrication",
@@ -79,7 +79,7 @@ const services: Service[] = [
       "CNC/laser detailing",
       "On-site installation",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/9.jpg",
   },
   {
     id: "residential-commercial-construction",
@@ -92,7 +92,7 @@ const services: Service[] = [
       "Material procurement",
       "Snag list & closure",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/39.jpg",
   },
   {
     id: "property-development-civil-contracting",
@@ -105,7 +105,7 @@ const services: Service[] = [
       "Site safety & compliance",
       "Quality audits & handover",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/38.jpg",
   },
   {
     id: "job-works",
@@ -120,7 +120,7 @@ const services: Service[] = [
       "Renovations",
       "Drapes",
     ],
-    image: "/assets/talwar_nobg.png",
+    image: "/assets/36.jpg",
   },
 ];
 
@@ -230,9 +230,7 @@ function ServiceSection({ s, i }: { s: Service; i: number }) {
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-[#d4af37]/15 via-transparent to-[#d4af37]/10" />
           <div className="pointer-events-none absolute inset-0 ring-1 ring-[#d4af37]/30" />
-          <figcaption className="absolute bottom-3 left-3 rounded-full bg-black/30 text-white text-xs px-3 py-1 backdrop-blur">
-            Sample preview
-          </figcaption>
+          
         </figure>
 
         {/* Content side */}
