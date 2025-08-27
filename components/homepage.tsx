@@ -59,13 +59,13 @@ export default function Homepage() {
       {/* ======================= HERO ======================= */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/assets/landingpage.jpg"
-            alt="Interior Design Showcase"
-            fill
-            className="object-cover"
-            priority
-            quality={90}
+          <video
+            src="/assets/landingpage.webm"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute w-full h-full inset-0 object-cover"
           />
           <div className="absolute inset-0 bg-black/30" />
         </div>
@@ -86,11 +86,11 @@ export default function Homepage() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+        {/* <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
           <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
             <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse" />
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* ======================= WELCOME ======================= */}
@@ -119,7 +119,7 @@ export default function Homepage() {
             style={{ paddingTop: "56.25%" }}
           >
             <Image
-              src="/assets/landingpage.jpg"
+              src="/assets/23.jpg"
               alt="Talwar Interiors showcase"
               fill
               className="object-cover"

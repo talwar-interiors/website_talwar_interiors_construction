@@ -11,45 +11,6 @@ const cinzel = Cinzel({
 });
 
 export default function ContactButtons() {
-  // 💧 Stone-in-water ripple: concentric rings from the click point
-  const handlePointerDown = (e: React.PointerEvent<HTMLAnchorElement>) => {
-    const btn = e.currentTarget;
-    const rect = btn.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Find farthest corner so the ripple fully reaches edges
-    const maxX = Math.max(x, rect.width - x);
-    const maxY = Math.max(y, rect.height - y);
-    const maxRadius = Math.sqrt(maxX * maxX + maxY * maxY);
-    const diameter = maxRadius * 2;
-
-    // Remove any existing ripple first
-    btn.querySelector(".ripple")?.remove();
-
-    // Create a centered ripple container at the click point
-    const container = document.createElement("span");
-    container.className = "ripple";
-    container.style.left = `${x}px`;
-    container.style.top = `${y}px`;
-    container.style.width = `${diameter}px`;
-    container.style.height = `${diameter}px`;
-    container.style.marginLeft = `${-diameter / 2}px`;
-    container.style.marginTop = `${-diameter / 2}px`;
-
-    // Create 3 concentric rings with staggered delays
-    for (let i = 0; i < 3; i++) {
-      const ring = document.createElement("span");
-      ring.className = "ripple-ring";
-      ring.style.animationDelay = `${i * 120}ms`;
-      container.appendChild(ring);
-    }
-
-    btn.appendChild(container);
-    // Clean up after the last ring finishes
-    container.addEventListener("animationend", () => container.remove());
-  };
-
   return (
     <>
       <div className="contact-stack" role="group" aria-label="Contact actions">
@@ -61,7 +22,6 @@ export default function ContactButtons() {
           aria-label="Chat on WhatsApp"
           title="Chat on WhatsApp"
           className="contact-button whatsapp-button"
-          onPointerDown={handlePointerDown}
         >
           <div className="button-content">
             <Image
@@ -70,8 +30,6 @@ export default function ContactButtons() {
               width={32}
               height={32}
               className="contact-icon"
-              sizes="32px"
-              priority
             />
             <span className={`button-text ${cinzel.className}`}>Chat with us</span>
           </div>
@@ -83,7 +41,6 @@ export default function ContactButtons() {
           aria-label="Call us"
           title="Call us"
           className="contact-button phone-button"
-          onPointerDown={handlePointerDown}
         >
           <div className="button-content">
             <Image
@@ -92,8 +49,6 @@ export default function ContactButtons() {
               width={32}
               height={32}
               className="contact-icon"
-              sizes="32px"
-              priority
             />
             <span className={`button-text ${cinzel.className}`}>Call us</span>
           </div>
@@ -132,9 +87,7 @@ export default function ContactButtons() {
           transform: translateZ(0);
           overflow: hidden;        /* for ripple + shine */
           transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, padding 0.25s ease;
-          animation:
-            floaty 4.5s ease-in-out infinite,
-            goldPulse 3.8s ease-in-out infinite;
+          animation: floaty 4.5s ease-in-out infinite;
           box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18);
 
           width: max-content;      /* each button hugs its own content */
@@ -226,46 +179,11 @@ export default function ContactButtons() {
           animation: shine 0.85s ease-out forwards;
         }
 
-        /* 💧 Water ripple (concentric rings) */
-        .ripple {
-          position: absolute;
-          pointer-events: none;
-          border-radius: 50%;
-          left: 0;
-          top: 0;
-          /* size & position are set inline from JS */
-        }
-        .ripple-ring {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          width: 100%;
-          height: 100%;
-          transform: translate(-50%, -50%) scale(0.2);
-          border-radius: 9999px;
-          box-sizing: border-box;
-          border: 2px solid rgba(212, 175, 55, 0.6);
-          opacity: 0.7;
-          will-change: transform, opacity;
-          animation: ripple-ring 820ms ease-out forwards;
-          filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.35));
-        }
-        @keyframes ripple-ring {
-          0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0.7; }
-          70%  { opacity: 0.35; }
-          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-        }
-
         /* 🎞️ Other keyframes */
         @keyframes floaty {
           0%   { transform: translateY(0); }
           50%  { transform: translateY(-3px); }
           100% { transform: translateY(0); }
-        }
-        @keyframes goldPulse {
-          0%   { box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18); }
-          50%  { box-shadow: 0 10px 26px rgba(212, 175, 55, 0.35); }
-          100% { box-shadow: 0 6px 18px rgba(212, 175, 55, 0.18); }
         }
         @keyframes shine {
           from { opacity: 0; }
