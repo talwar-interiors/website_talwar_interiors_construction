@@ -40,7 +40,7 @@ const services: Service[] = [
       "Rugs, art & décor curation",
       "Ergonomics & scale checks",
     ],
-    image: "/assets/furniture_new.jpg",
+    image: "/assets/furniture_new.png",
   },
   {
     id: "lighting-false-ceiling-solutions",
