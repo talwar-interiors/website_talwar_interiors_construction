@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Cinzel } from "next/font/google";
+import { useEffect, useRef, useState } from "react";
 import Testimonials from "@/components/sections/testimonials"; 
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
@@ -58,20 +59,86 @@ const SERVICES: TService[] = [
 ];
 
 export default function Homepage() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleLoadedData = () => {
+      setVideoLoaded(true);
+      // Ensure smooth playback
+      video.currentTime = 0;
+    };
+
+    const handleError = () => {
+      setVideoError(true);
+      console.warn("Video failed to load, falling back to image");
+    };
+
+    const handleCanPlay = () => {
+      // Pre-buffer the video for smooth playback
+      video.play().catch(() => {
+        setVideoError(true);
+      });
+    };
+
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('error', handleError);
+    video.addEventListener('canplay', handleCanPlay);
+
+    // Preload the video
+    video.load();
+
+    return () => {
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('error', handleError);
+      video.removeEventListener('canplay', handleCanPlay);
+    };
+  }, []);
+
   return (
     <div
       className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 ${cinzel.className}`}
     >
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video
-            src="/assets/landingpage.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute w-full h-full inset-0 object-cover"
+          {!videoError ? (
+            <video
+              ref={videoRef}
+              src="/assets/landingpage.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              disablePictureInPicture
+              controlsList="nodownload nofullscreen noremoteplayback"
+              className={`absolute w-full h-full inset-0 object-cover transition-opacity duration-500 ${
+                videoLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{
+                // Optimize video rendering
+                willChange: 'auto',
+                backfaceVisibility: 'hidden',
+                transform: 'translate3d(0, 0, 0)',
+              }}
+            />
+          ) : null}
+          
+          {/* Fallback image that shows while video loads or if video fails */}
+          <div 
+            className={`absolute w-full h-full inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${
+              videoLoaded && !videoError ? 'opacity-0' : 'opacity-100'
+            }`}
+            style={{
+              backgroundImage: 'url("/assets/hero-fallback.jpg")', // Add a fallback hero image
+              backgroundColor: '#1a1a1a', // Fallback color
+            }}
           />
+          
           <div className="absolute inset-0 bg-black/30" />
         </div>
 
@@ -187,6 +254,7 @@ export default function Homepage() {
           </div>
         </div>
       </section>
+      
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 text-gray-800">
@@ -270,7 +338,6 @@ export default function Homepage() {
       </section>
       
       <Testimonials />
-
 
       <style jsx global>{`
         /* Translucent CTA with gold border + animated sheen */
