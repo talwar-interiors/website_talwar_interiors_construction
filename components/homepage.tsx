@@ -156,7 +156,6 @@ export default function Homepage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-tr from-[#d4af37]/12 via-transparent to-[#d4af37]/10" />
                 </div>
-
                 <div className="px-5 pt-4 pb-5">
                   <h3 className="text-lg font-semibold text-gray-900 text-center transition-colors group-hover:text-[#D4AF37]">
                     {s.title}
