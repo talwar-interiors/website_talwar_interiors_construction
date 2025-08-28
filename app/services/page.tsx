@@ -40,7 +40,7 @@ const services: Service[] = [
       "Rugs, art & décor curation",
       "Ergonomics & scale checks",
     ],
-    image: "/assets/furniture.jpg",
+    image: "/assets/furniture_new.jpg",
   },
   {
     id: "lighting-false-ceiling-solutions",
@@ -53,7 +53,7 @@ const services: Service[] = [
       "Automation readiness",
       "Fixture scheduling",
     ],
-    image: "/assets/34.jpg",
+    image: "/assets/false_ceiling.jpg",
   },
   {
     id: "space-planning-optimization",
@@ -79,7 +79,7 @@ const services: Service[] = [
       "CNC/laser detailing",
       "On-site installation",
     ],
-    image: "/assets/9.jpg",
+    image: "/assets/fabrication.jpg",
   },
   {
     id: "residential-commercial-construction",

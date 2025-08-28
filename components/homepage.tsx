@@ -41,7 +41,7 @@ const SERVICES: TService[] = [
       "Rugs, art & décor curation",
       "Ergonomics & scale checks",
     ],
-    image: "/assets/furniture.jpg",
+    image: "/assets/furniture_new.png",
   },
   {
     id: "lighting-false-ceiling-solutions",
@@ -54,7 +54,7 @@ const SERVICES: TService[] = [
       "Automation readiness",
       "Fixture scheduling",
     ],
-    image: "/assets/34.jpg",
+    image: "/assets/false_ceiling.jpg",
   },
 ];
 
