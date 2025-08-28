@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: "Talwar Interiors",
     images: [
       {
-        url: "/assets/talwarinteriors_og.png",
+        url: "/assets/talwar_nobg.png",
         width: 1200,
         height: 630,
         alt: "Talwar Interiors – Luxury Interior Design & Construction",
