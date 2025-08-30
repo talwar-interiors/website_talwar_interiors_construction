@@ -15,10 +15,8 @@ const TESTIMONIALS: TItem[] = [
   { quote: "From mood boards to handover, everything felt precise. Budgets were transparent, schedules honored, outcome beyond expectation.", name: "Nikhil Kapoor", meta: "Premium Villa — Nanakramguda", rating: 5.0 },
   { quote: "Retail reimagined with intelligent lighting and meticulous fabrication. Sales lifted within weeks—design that truly performs.", name: "Aarav Verma", meta: "Retail Flagship — Gachibowli", rating: 4.6 },
   { quote: "Creative and exacting. The palette, proportions and detailing show a strong point of view—our space feels iconic.", name: "Divya Iyer", meta: "Penthouse — Financial District", rating: 4.5 },
-  // Slightly negative but ends positive (timing)
   { quote: "Installation finished five days beyond the commitment due to a bespoke stone batch. The updates were consistent, and the final finish is exquisite—absolutely forgivable for the quality.", name: "Aditya Malhotra", meta: "Townhouse — Banjara Hills", rating: 4.3 },
   { quote: "They understood our lifestyle and translated it into thoughtful spaces—smart storage, perfect lighting, textures that age beautifully.", name: "Radhika & Kabir Menon", meta: "Family Home — Madhapur", rating: 4.8 },
-  // Another gentle critique (communication) but ends strong
   { quote: "A couple of site meetings started late, which worried me at first. But the craftsmanship and finish surpassed expectations—the result is refined, cohesive and worth the patience.", name: "Ishaan Bhattacharya", meta: "Show Apartment — Hitech City", rating: 4.0 },
   { quote: "From concept to execution, everything felt intentional. The result is calm, sophisticated and built to last.", name: "Vihaan Deshmukh", meta: "Weekend Home — Gandipet", rating: 4.9 },
 ];

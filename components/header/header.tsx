@@ -26,7 +26,6 @@ export default function Header() {
   const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Desktop: anti-flicker scheduling
   const scheduleOpen = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     if (megaOpen) return;
@@ -37,7 +36,7 @@ export default function Header() {
     closeTimer.current = setTimeout(() => setMegaOpen(false), 180);
   };
 
-  // Close menus on ESC
+  // Close menu on ESC
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -51,13 +50,12 @@ export default function Header() {
   }, []);
 
   return (
-    // ✅ Apply Cinzel to the entire header so desktop + mobile inherit it
     <header className={`${cinzel.className} sticky top-0 z-50 border-b border-[#d4af37]/20 shadow-[0_4px_20px_rgba(0,0,0,0.08)] backdrop-blur-lg`}>
       {/* Gold gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/10 via-white/80 to-[#d4af37]/10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* ⬇️ Removed cinzel here (now inherited from header) */}
+        {/* Removed cinzel here (now inherited from header) */}
         <div className="grid grid-cols-3 items-center h-20">
           {/* Left: Home + SERVICES */}
           <nav aria-label="Primary left" className="hidden md:flex items-center justify-center gap-8">

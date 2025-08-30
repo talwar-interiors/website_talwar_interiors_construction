@@ -190,7 +190,7 @@ export default function PrivacyPolicy() {
               </p>
             </div>
 
-            {/* === FULL POLICY CONTENT === */}
+          {/* FULL POLICY CONTENT */}
             <div className="prose prose-lg max-w-none text-gray-700">
               <p>
                 At TALWAR Constructions & Interior&apos;s (&quot;we,&quot;

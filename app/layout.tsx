@@ -10,6 +10,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.talwarinteriors.in"),
+  applicationName: "Talwar Interiors",
   title: "Talwar Interiors | Luxury Interior Design & Construction in India",
   description:
     "Talwar Interiors crafts timeless, elegant, and functional spaces across homes, offices, and commercial projects. From concept-to-execution interior design to construction, furniture, lighting, and bespoke décor — we redefine modern luxury in India.",
@@ -30,34 +31,83 @@ export const metadata: Metadata = {
     "Delhi",
     "Bangalore",
   ],
+  authors: [{ name: "Talwar Interiors", url: "https://www.talwarinteriors.in" }],
+  creator: "Talwar Interiors",
+  publisher: "Talwar Interiors",
+  referrer: "origin-when-cross-origin",
+  themeColor: "#D4AF37",
+  formatDetection: { email: false, address: false, telephone: true },
+  category: "Home & Garden",
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://www.talwarinteriors.in",
+    languages: {
+      "en-IN": "https://www.talwarinteriors.in",
+    },
+  },
+  verification: {
+    google: "/* your-google-site-verification-code */",
+    yandex: "/* optional */",
+  },
   openGraph: {
     title: "Talwar Interiors | India’s Luxury Interior Design & Construction Firm",
     description:
       "Discover Talwar Interiors — where design meets passion. Premium interiors, construction, and bespoke furniture solutions tailored for timeless living and working spaces.",
     url: "https://www.talwarinteriors.in",
-    type: "website",
     siteName: "Talwar Interiors",
+    type: "website",
+    locale: "en_IN",
     images: [
       {
-        url: "/assets/talwar_nobg.png",
+        url: "/assets/talwarinteriors_og.png",
         width: 1200,
         height: 630,
         alt: "Talwar Interiors – Luxury Interior Design & Construction",
+      },
+      {
+        url: "/assets/talwar_nobg.png",
+        width: 1200,
+        height: 1200,
+        alt: "Talwar Interiors Gold Mark",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@TalwarInteriors", // remove if you don't have a handle
+    site: "@TalwarInteriors",
     title: "Talwar Interiors | Luxury Interior Design & Construction in India",
     description:
       "Transforming spaces into timeless experiences — Talwar Interiors specializes in premium design, construction, and bespoke interiors across India.",
-    images: ["/assets/talwarinteriors_og.png"], // ✅ use `images`, not `image`
+    images: ["/assets/talwarinteriors_og.png"],
   },
   icons: {
-    icon: "/assets/favicon.png",
+    icon: [
+      { url: "/assets/favicon.png" },
+      { url: "/assets/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/assets/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/assets/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: ["/assets/favicon.png"],
+    other: [
+      { rel: "mask-icon", url: "/assets/safari-pinned-tab.svg", color: "#D4AF37" },
+    ],
   },
+  manifest: "/site.webmanifest",
 };
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

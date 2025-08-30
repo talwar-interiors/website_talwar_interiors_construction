@@ -69,7 +69,7 @@ export default function Homepage() {
 
     const handleLoadedData = () => {
       setVideoLoaded(true);
-      // Ensure smooth playback
+      // Ensures smooth playback
       video.currentTime = 0;
     };
 
@@ -134,7 +134,7 @@ export default function Homepage() {
               videoLoaded && !videoError ? 'opacity-0' : 'opacity-100'
             }`}
             style={{
-              backgroundImage: 'url("/assets/hero-fallback.jpg")', // Add a fallback hero image
+              backgroundImage: 'url("/assets/fabrication.jpg")',
               backgroundColor: '#1a1a1a', // Fallback color
             }}
           />

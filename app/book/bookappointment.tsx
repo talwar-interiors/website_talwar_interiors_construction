@@ -24,13 +24,12 @@ function safeCreateSupabase(): SupabaseClient | null {
 const supabase = safeCreateSupabase();
 const envOk = !!supabase;
 
-/** ── Types ─────────────────────────────────────────────────────────────── */
 type FormData = {
   name: string;
   mail: string;
   phone: string;
-  date: string;   // YYYY-MM-DD from <input type="date">
-  time: string;   // your select values (e.g., "morning" | "afternoon" | "evening")
+  date: string;   
+  time: string;  
   location: string;
   text: string;
 };
@@ -44,7 +43,7 @@ type Particle = {
 };
 
 export default function BookAppointment() {
-  /** ── Form + UI state ────────────────────────────────────────────────── */
+
   const [formData, setFormData] = useState<FormData>({
     name: "",
     mail: "",
@@ -60,7 +59,7 @@ export default function BookAppointment() {
   const [bookingId, setBookingId] = useState<string | number | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  /** ── Background particles ───────────────────────────────────────────── */
+  //  Background particles 
   const [particles, setParticles] = useState<Particle[]>([]);
   useEffect(() => {
     setParticles(
@@ -74,7 +73,6 @@ export default function BookAppointment() {
     );
   }, []);
 
-  /** ── Controlled inputs ──────────────────────────────────────────────── */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -82,7 +80,7 @@ export default function BookAppointment() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  /** ── Submit: single-object insert (fixes PGRST102) ──────────────────── */
+  //  Submit: single-object insert 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg(null);
@@ -105,22 +103,20 @@ export default function BookAppointment() {
       // Build payload matching your *actual* DB columns
       const payload = {
         name: formData.name.trim(),
-        mail: formData.mail.trim(),      // column is email
+        mail: formData.mail.trim(),      
         phone: formData.phone.trim(),
-        date: formData.date || null,       // if DATE column, avoid empty string
+        date: formData.date || null,      
         time: formData.time || null,
         location: formData.location?.trim() || null,
-        // assuming TEXT; keep as-is
         text: formData.text?.trim() || null,
-        // (omit created_at if your table doesn't have it or has a default)
       };
 
       // Optional: quick debug
       // console.log("insert payload →", JSON.stringify(payload));
 
       const { data, error } = await supabase
-        .from("talwar_database")          // your table
-        .insert([payload])                   // SINGLE object (not [payload])
+        .from("talwar_database")          
+        .insert([payload])                  
         .select("id")
         .single();
 
@@ -161,7 +157,7 @@ setBookingId(newId);
     }
   };
 
-  /** ── Render ─────────────────────────────────────────────────────────── */
+  //  Render 
   if (!envOk) {
     // Friendly UI guard if env vars are missing/invalid
     return (

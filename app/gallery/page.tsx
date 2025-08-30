@@ -10,7 +10,6 @@ import Footer from "../../components/footer/footer";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
-/* ======================= Static constants (ESLint-safe) ======================= */
 type ImageItem = { id: number; url: string; alt: string; aspectRatio: number };
 
 const FILES: string[] = [
@@ -62,7 +61,7 @@ const FILES: string[] = [
 
 const SEED_RATIOS = [4 / 3, 3 / 4, 16 / 9, 9 / 16, 1, 5 / 4, 4 / 5];
 
-/* ============================= Helper Components ============================= */
+// Helper Components 
 const GoldAnimatedBackground = () => (
   <div className="pointer-events-none absolute left-0 top-0 -z-10 size-full">
     <svg className="absolute size-full" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1920 1080">
@@ -108,7 +107,7 @@ function GoldCTAPanel() {
   );
 }
 
-/* =============================== Utilities =============================== */
+// Utilities
 function useImages(): ImageItem[] {
   return useMemo(
     () =>
@@ -134,7 +133,7 @@ function balanceColumns(images: ImageItem[], num: number): ImageItem[][] {
   return cols;
 }
 
-/* Deterministic “variance” to avoid hydration mismatch */
+//  Deterministic “variance” to avoid hydration mismatch 
 function seededVariance(id: number): number {
   const x = Math.sin(id * 997) * 10000;
   const frac = x - Math.floor(x);
@@ -148,7 +147,7 @@ function cardHeight(img: ImageItem): number {
   return Math.max(200, Math.min(520, h));
 }
 
-/* ================================= Page ================================= */
+// Page 
 export default function GalleryPage() {
   const images = useImages();
 

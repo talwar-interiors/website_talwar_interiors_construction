@@ -1,4 +1,3 @@
-// app/services/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import { Cinzel } from "next/font/google";
@@ -131,7 +130,6 @@ export default function ServicesPage() {
       <Header />
 
       <main id="top" className={`min-h-screen bg-white text-gray-900 ${cinzel.className}`}>
-        {/* HERO — centered title + punchline, elegant gold divider */}
         <section className="relative overflow-hidden">
           <div className="mx-auto max-w-6xl px-4 pt-20 pb-14 sm:pt-28 text-center">
             <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide">
@@ -211,7 +209,7 @@ export default function ServicesPage() {
   );
 }
 
-/** Section renderer with side image + gold frame + alternating order */
+// Section renderer with side image + gold frame + alternating order
 function ServiceSection({ s, i }: { s: Service; i: number }) {
   const reverse = i % 2 === 1;
 

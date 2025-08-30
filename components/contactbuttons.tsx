@@ -25,7 +25,7 @@ export default function ContactButtons() {
         >
           <div className="button-content">
             <Image
-              src="/assets/whatsapp.png" // change to "/whatsapp.png" if not in /public/assets
+              src="/assets/whatsapp.png" 
               alt=""
               width={32}
               height={32}
@@ -44,7 +44,7 @@ export default function ContactButtons() {
         >
           <div className="button-content">
             <Image
-              src="/assets/telephone.png" // change to "/telephone.png" if not in /public/assets
+              src="/assets/telephone.png" 
               alt=""
               width={32}
               height={32}

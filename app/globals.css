@@ -12,8 +12,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Light mode is now the default for a professional look */
-
 body {
   background: var(--background);
   color: var(--foreground);
