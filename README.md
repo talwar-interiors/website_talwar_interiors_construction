@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://www.talwarinteriors.in" target="_blank">
-    <img src="./public/assets/talwarinteriors_og.png" alt="Talwar Interiors Website Preview" width="800"/>
+    <img src="./public/assets/talwar_nobg.png" alt="Talwar Interiors Website Preview" width="800"/>
   </a>
 </p>
 
