@@ -96,14 +96,13 @@ Follow these steps to get the project running locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/talwar-interiors.git
-cd talwar-interiors
+git clone https://github.com/thecodinganvil/website_talwar_interiors_construction.git ./
 ```
 
 ### 2. Install Dependencies
 
 ```bash
-npm install
+bun install
 ```
 
 ### 3. Set Up Environment Variables
@@ -118,19 +117,11 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
 ### 4. Run the Development Server
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000).
 
-### Production Build
-
-```bash
-npm run build
-npm start
-```
-
----
 
 ## 🔒 Environment Variables
 
@@ -145,7 +136,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
 ## 📸 Preview
 
-![Talwar Interiors Preview](./public/assets/talwarinteriors_og.png)
+![Talwar Interiors Preview](./public/assets/talwar_nobg.png)
 
 ---
 
@@ -157,5 +148,5 @@ This project is licensed for **Talwar Interiors** and is not intended for redist
 
 ## 👨‍💻 Author
 
-Developed by **Mohammed Osman**
+Developed with ❤ by **Mohammed Osman**
 [www.talwarinteriors.in](https://www.talwarinteriors.in)
