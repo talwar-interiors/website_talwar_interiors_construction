@@ -6,7 +6,6 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
-/** ── Supabase: safe init with URL validation ───────────────────────────── */
 const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
