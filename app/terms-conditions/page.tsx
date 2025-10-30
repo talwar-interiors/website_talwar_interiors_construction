@@ -186,7 +186,7 @@ export default function TermsConditions() {
                   Terms & Conditions
                 </span>
               </h1>
-              <p className="text-gray-600">Last Updated: [Insert Date]</p>
+      
             </div>
 
             <div className="prose prose-lg max-w-none text-gray-700">
