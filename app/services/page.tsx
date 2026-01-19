@@ -1,8 +1,31 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Cinzel } from "next/font/google";
+import type { Metadata } from "next";
 import Header from "../../components/header/header";
 import Footer from "../../components/footer/footer";
+
+export const metadata: Metadata = {
+  title: "Interior Design & Construction Services | Talwar Interiors Hyderabad",
+  description:
+    "Premium interior design services in Hyderabad - modular kitchens, false ceilings, furniture, lighting, residential & commercial construction. Free consultation available.",
+  keywords: [
+    "interior designer Hyderabad",
+    "modular kitchen Hyderabad",
+    "false ceiling contractors",
+    "home interior design India",
+    "office interior designers",
+    "luxury interior design",
+    "residential construction Hyderabad",
+    "commercial interior design",
+  ],
+  openGraph: {
+    title: "Our Services | Talwar Interiors",
+    description:
+      "Explore our full-service offerings: interior design, furniture, lighting, construction, and civil contracting across India.",
+    images: ["/assets/talwarinteriors_og.png"],
+  },
+};
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -13,6 +36,7 @@ type Service = {
   points: string[];
   image: string;
 };
+
 
 const services: Service[] = [
   {
@@ -228,7 +252,7 @@ function ServiceSection({ s, i }: { s: Service; i: number }) {
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-[#d4af37]/15 via-transparent to-[#d4af37]/10" />
           <div className="pointer-events-none absolute inset-0 ring-1 ring-[#d4af37]/30" />
-          
+
         </figure>
 
         {/* Content side */}
@@ -256,15 +280,15 @@ function ServiceSection({ s, i }: { s: Service; i: number }) {
           {/* Actions: Book + Explore our work (gallery) */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-                href="/book"
-                className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37] bg-transparent px-6 py-3 text-sm font-semibold text-[#D4AF37] shadow-[0_10px_30px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/40 transition
+              href="/book"
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl border border-[#D4AF37] bg-transparent px-6 py-3 text-sm font-semibold text-[#D4AF37] shadow-[0_10px_30px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/40 transition
                           hover:shadow-[0_14px_40px_rgba(212,175,55,0.45)] hover:bg-[#D4AF37]/10 active:scale-95"
-                aria-label="Book a Consultation"
-              >
-                <span className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(212,175,55,0.25),transparent)]" />
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(212,175,55,0.6),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
-                <span className="relative z-10">Book a Consultation</span>
-              </Link>
+              aria-label="Book a Consultation"
+            >
+              <span className="pointer-events-none absolute inset-0 opacity-40 bg-[radial-gradient(60%_120%_at_50%_0%,rgba(212,175,55,0.25),transparent)]" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-[linear-gradient(120deg,transparent,rgba(212,175,55,0.6),transparent)] transition-transform duration-700 ease-out group-hover:translate-x-full" />
+              <span className="relative z-10">Book a Consultation</span>
+            </Link>
 
 
             <Link
