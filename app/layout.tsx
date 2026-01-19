@@ -143,6 +143,43 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })}
         </Script>
 
+        {/* JSON-LD Structured Data (LocalBusiness) */}
+        <Script id="ti-local-jsonld" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://www.talwarinteriors.in",
+            name: "Talwar Interiors",
+            image: "https://www.talwarinteriors.in/assets/talwarinteriors_og.png",
+            url: "https://www.talwarinteriors.in",
+            telephone: "+91-9000701000",
+            email: "info@talwarinteriors.in",
+            priceRange: "₹₹₹",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Hyderabad",
+              addressRegion: "Telangana",
+              addressCountry: "IN",
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 17.385,
+              longitude: 78.4867,
+            },
+            openingHoursSpecification: {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              opens: "09:00",
+              closes: "19:00",
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: "4.7",
+              reviewCount: "10",
+            },
+          })}
+        </Script>
+
         {/* (Optional) If you still want a favicon link explicitly */}
         <link rel="icon" type="image/png" href="/assets/favicon.png" />
       </head>
